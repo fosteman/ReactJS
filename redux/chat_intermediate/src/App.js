@@ -22,16 +22,30 @@ import uuid from 'uuid';
   };
 }*/
 import {createStore} from 'redux';
-
 function reducer(state, action) {
+    return {
+        activeThreadID: activeThreadIdReducer(state.activeThreadId, action),
+        threads: threadsReducer(state.threads, action),
+    }
+}
+function activeThreadIdReducer(state, action) {
+    if (action.type === 'OPEN_THREAD') {
+        return action.id;
+    }
+    else
+    {
+        return state;
+    }
+}
+function threadsReducer(state, action) {
   if (action.type === 'ADD_MESSAGE') {
       const newMessage = {
           text: action.text,
           timestamp: Date.now(),
           id: uuid.v4(),
       };
-      const threadIndex = state.threads.findIndex((thread) => thread.id === action.threadID);
-      const oldThread = state.threads [threadIndex];
+      const threadIndex = state.findIndex((thread) => thread.id === action.threadID);
+      const oldThread = state[threadIndex];
       /*const newThread = { ES7
           ...oldThread,
           messages: oldThread.messages.concat(newMessage)
@@ -40,61 +54,36 @@ function reducer(state, action) {
 
 
     return {
-        ...state,
-        threads: [
             ...state.threads.slice(0, threadIndex),
             newThread,
             ...state.threads.slice(threadIndex + 1, threadIndex.length),
-        ],
     };
   }
   else if (action.type === 'DELETE_MESSAGE') {
-      const threadIndex = state.threads.findIndex(
-          (thread) => thread.messages.find(
-              (msg) => (msg.id === action.id)
-          )
+      const threadIndex = state.findIndex(
+          (thread) =>
+              thread.messages.find((msg) => (msg.id === action.id))
       );
-      const oldThread = state.threads[threadIndex];
+      const oldThread = state[threadIndex];
       const newThread = {
           ...oldThread,
           messages: oldThread.messages.filter((msg) => (msg.id !== action.id)),
       };
-
     return {
-        ...state,
-        thread: [
-            ...state.threads.slice(0, threadIndex),
+            ...state.slice(0, threadIndex),
             newThread,
-            ...state.threads.slice(threadIndex + 1, state.threads.length),
-        ]
+            ...state.slice(threadIndex + 1, state.threads.length),
     };
-  }
-  else if (action.type === 'OPEN_THREAD') {
-      return {
-          ...state,
-          activeThreadID: action.id,
-      };
   }
   else {
     return state;
   }
 }
-
-const initialState_ = { threads: [{
-        messages:
-            [{
-                text: '',
-                timestamp: 0,
-                id: '0',
-            }],
-        id: 'threadID',
-        title: 'Thread title', }]};
 const initialState = {
-    activeThreadID: '1',
     threads: [
         {
-            id: '1', //thread ID
-            title: 'Thread title',
+            id: 'id-1',
+            title: 'Title #1',
             messages:
             [
                 {
@@ -105,8 +94,8 @@ const initialState = {
             ],
         },
         {
-            id: '2',
-            title: 'Thread ID: 2 title',
+            id: 'id-2',
+            title: 'Title #2',
             messages: [
                 {
                     text: 'Read you loud and clear Watson,' +
@@ -117,6 +106,7 @@ const initialState = {
             ],
         }
         ],
+    activeThreadID: 'id-2',
 };
 
 const store = createStore(reducer, initialState);
@@ -127,10 +117,10 @@ class App extends React.Component {
   }
   render() {
       const state = store.getState();
-      const activeThreadID = state.activeThreadID;
+      const activeThreadID = state.activeThreadID = 'id-2'; //can't get activeID. It's constantly not defined inspite of initalState.
       const threads = state.threads;
+      console.log(state);
       const activeThread = threads.find((thread) => thread.id === activeThreadID);
-
       const tabs = threads.map((thread) => ({
                   title: thread.title,
                   active: thread.id === activeThreadID, //boolean
@@ -155,7 +145,7 @@ class ThreadTabs extends React.Component {
     };
     render() {
         const tabs = this.props.tabs.map((tab, index) => (
-            <div className={tab.active ? 'active item' : 'item'} key={index} onClick={() => this.handleClick(tab.id)}>{tab.title}</div>
+            <div className={tab.active ? 'active item' : 'item'} key={index} onClick={() => { this.handleClick(tab.id); console.log(tab.id);}}>{tab.title}</div>
         ));
         return(
             <div className='ui tio attached tabular menu'>{tabs}</div>
