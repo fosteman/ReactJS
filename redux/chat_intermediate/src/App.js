@@ -68,7 +68,14 @@ function reducer(state, action) {
             ...state.threads.slice(threadIndex + 1, state.threads.length),
         ]
     };
-  } else {
+  }
+  else if (action.type === 'OPEN_THREAD') {
+      return {
+          ...state,
+          activeThreadID: action.id,
+      };
+  }
+  else {
     return state;
   }
 }
@@ -127,6 +134,7 @@ class App extends React.Component {
       const tabs = threads.map((thread) => ({
                   title: thread.title,
                   active: thread.id === activeThreadID, //boolean
+                    id: thread.id,
           }));
     return (
       <div className='ui segment'>
@@ -137,9 +145,17 @@ class App extends React.Component {
   }
 }
 class ThreadTabs extends React.Component {
+    handleClick = (id) => {
+      store.dispatch(
+          {
+              type: 'OPEN_THREAD',
+              id: id,
+          }
+      );
+    };
     render() {
         const tabs = this.props.tabs.map((tab, index) => (
-            <div className={tab.active ? 'active item' : 'item'} key={index}>{tab.title}</div>
+            <div className={tab.active ? 'active item' : 'item'} key={index} onClick={() => this.handleClick(tab.id)}>{tab.title}</div>
         ));
         return(
             <div className='ui tio attached tabular menu'>{tabs}</div>
