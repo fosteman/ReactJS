@@ -2,37 +2,53 @@ import React from 'react';
 import uuid from 'uuid';
 import { createStore } from 'redux';
 
-function reducer(state, action) {
+
+function reducer(state = {}, action) {
     return {
         activeThreadId: activeThreadIdReducer(state.activeThreadId, action),
         threads: threadsReducer(state.threads, action),
     };
 }
-
-function activeThreadIdReducer(state, action) {
+const store = createStore(reducer);
+function messagesReducer(state = [] , action) {
+    if (action.type === 'ADD_MESSAGE') {
+        const newMessage = {
+            text: action.text,
+            timestamp: Date.now(),
+            id: uuid.v4(),
+        };
+        return state.concat(newMessage);
+    }
+    else if (action.type === 'DELETE_MESSAGE') {
+        return state.filter((msg) => msg.id !== action.id);
+    }
+    else {
+        return state;
+    }
+}
+function activeThreadIdReducer(state = 'id-1', action) { //initialization of state within reducer submodules
     if (action.type === 'OPEN_THREAD') {
         return action.id;
     } else {
         return state;
     }
 }
-function findThreadIndex(threads, action) {
-    switch (action.type) {
-        case 'ADD_MESSAGE': {
-            return threads.findIndex((thread) => thread.id === action.threadId);
-        }
-        case 'DELETE_MESSAGE': {
-            return threads.findIndex((thread) => thread.messages.find((msg) => action.id === msg.id));
-        }
-    }
-}
-function threadsReducer(state, action) {
-   //refactored
+function threadsReducer(state = [
+                            {
+                                id: 'id-1',
+                                title: 'Tim Fosteman',
+                                messages: messagesReducer(undefined, {}),
+                            },
+                            {
+                                id: 'id-2',
+                                title: 'Universe',
+                                messages: messagesReducer(undefined, {}),
+                            },
+                        ], action) {
+   //refactored v0.0.2
    switch (action.type) {
        case 'ADD_MESSAGE': {
-           const threadIndex = state.findIndex(
-               (t) => t.id === action.threadId
-           );
+           const threadIndex = findThreadIndex(state, action);
            const oldThread = state[threadIndex];
            const newThread = {
                ...oldThread,
@@ -47,11 +63,7 @@ function threadsReducer(state, action) {
            ];
        }
        case 'DELETE_MESSAGE': {
-           const threadIndex = state.findIndex(
-               (t) => t.messages.find((m) => (
-                   m.id === action.id
-               ))
-           );
+           const threadIndex = findThreadIndex(state, action);
            const oldThread = state[threadIndex];
            const newThread = {
                ...oldThread,
@@ -71,23 +83,17 @@ function threadsReducer(state, action) {
        }
    }
 }
-function messagesReducer(state, action) {
-    if (action.type === 'ADD_MESSAGE') {
-        const newMessage = {
-            text: action.text,
-            timestamp: Date.now(),
-            id: uuid.v4(),
-        };
-        return state.concat(newMessage);
-    }
-    else if (action.type === 'DELETE_MESSAGE') {
-        return state.filter((msg) => msg.id !== action.id);
-    }
-    else {
-        return state;
+function findThreadIndex(threads, action) {
+    switch (action.type) {
+        case 'ADD_MESSAGE': {
+            return threads.findIndex((thread) => thread.id === action.threadId);
+        }
+        case 'DELETE_MESSAGE': {
+            return threads.findIndex((thread) => thread.messages.find((msg) => action.id === msg.id));
+        }
     }
 }
-const initialState = {
+/*const initialState = {
     activeThreadId: '1-fca2',
     threads: [
         {
@@ -108,8 +114,8 @@ const initialState = {
         },
     ],
 };
+*/
 
-const store = createStore(reducer, initialState);
 
 class App extends React.Component {
     componentDidMount() {
@@ -138,9 +144,6 @@ class App extends React.Component {
         );
     }
 }
-
-/* eslint-disable react/prefer-stateless-function */
-
 class ThreadTabs extends React.Component {
     handleClick = (id) => {
         store.dispatch({
@@ -166,7 +169,6 @@ class ThreadTabs extends React.Component {
         );
     }
 }
-
 class MessageInput extends React.Component {
     state = {
         value: '',
@@ -208,7 +210,6 @@ class MessageInput extends React.Component {
         );
     }
 }
-
 class Thread extends React.Component {
     handleClick = (id) => {
         store.dispatch({
@@ -240,5 +241,4 @@ class Thread extends React.Component {
         );
     }
 }
-
 export default App;
