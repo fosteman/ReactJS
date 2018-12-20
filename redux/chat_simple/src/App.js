@@ -1,3 +1,4 @@
+import React from 'react';
 function createStore(reducer, initialState) {
     let state = initialState;
     const listeners = [];
@@ -11,18 +12,15 @@ function createStore(reducer, initialState) {
         state = reducer(state, action);
         listeners.forEach(subscriber => subscriber());
     };
-
     return {
         subscribe,
         getState,
         dispatch,
     };
 }
-
-
 function reducer(state, action) {
     if (action.type === 'ADD_MESSAGE')
-        return {messages: state.messages.concat(action.message)};
+        return { messages: state.messages.concat(action.message) };
     else if (action.type === 'DELETE_MESSAGE')
         return {
             messages: [
@@ -31,25 +29,49 @@ function reducer(state, action) {
             ]
         };
 }
-const store = createStore(reducer ,{
-    messages: [
-        'init',
-    ]
-});
-const listener = () => { console.log('Current state: '); console.log(store.getState());
-};
-store.subscribe(listener);
-const addmsgact1 = {
-    type: 'ADD_MESSAGE',
-    message: '1'
-};
-store.dispatch(addmsgact1);
-const addMessageAction2 = {
-    type: 'ADD_MESSAGE',
-    message: 'I read you loud and clear, Houston.',
-};
-store.dispatch(addMessageAction2);
-// -> `listener()` is called
-const deleteMessageAction = { type: 'DELETE_MESSAGE', index: 0,
-};
-store.dispatch(deleteMessageAction);
+const ReduxStore = createStore( reducer ,{messages: ['init']} );
+
+class App extends React.Component {
+    componentDidMount() { //changes in state will be re-rendered.
+        ReduxStore.subscribe(() => this.forceUpdate());
+    }
+    render() {
+        const messages = ReduxStore.getState().messages;
+        return (
+            <div className='ui segment'>
+                <MessageView messages={messages} />
+                <MessageInput />
+            </div>
+        );
+    }
+}
+class MessageInput extends React.Component {
+    state = { inputValue: ''};
+    onChange = (event) => {
+        this.setState({
+            inputValue: event.target.value,
+        });
+    };
+    handleSubmit = () => {
+        ReduxStore.dispatch({type: 'ADD_MESSAGE', message: this.state.inputValue,});
+        this.setState({inputValue: ''});
+    };
+    render() {
+        return (
+            <div className='ui input'>
+                <input value={this.state.inputValue} onChange={this.onChange} type='text' placeholder='Your message' />
+                <button onClick={this.handleSubmit} className='button ui primary' type='submit'>Send message</button>
+            </div>
+        );
+    }
+}
+class MessageView extends React.Component {
+    handleClick = (index) => {
+        ReduxStore.dispatch({index: index, type:'DELETE_MESSAGE'});
+    };
+    render() {
+        const messages = this.props.messages.map((msg, index) => (<div className='comment' key={index} onClick={this.handleClick(index)}> {msg} </div>));
+        return (<div className='ui comments'>{messages}</div>);
+    }
+}
+export default App;
