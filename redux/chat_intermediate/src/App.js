@@ -81,7 +81,7 @@ function messagesReducer(state, action) {
         return state.concat(newMessage);
     }
     else if (action.type === 'DELETE_MESSAGE') {
-
+        return state.filter((msg) => msg.id !== action.id);
     }
     else {
         return state;
