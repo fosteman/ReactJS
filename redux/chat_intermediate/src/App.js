@@ -1,6 +1,6 @@
 import React from 'react';
-
-function createStore(reducer, initialState) {
+import uuid from 'uuid';
+/*function createStore(reducer, initialState) {
   let state = initialState;
   const listeners = [];
 
@@ -20,28 +20,97 @@ function createStore(reducer, initialState) {
     getState,
     dispatch,
   };
-}
+}*/
+import {createStore} from 'redux';
 
 function reducer(state, action) {
   if (action.type === 'ADD_MESSAGE') {
+      const newMessage = {
+          text: action.text,
+          timestamp: Date.now(),
+          id: uuid.v4(),
+      };
+      const threadIndex = state.threads.findIndex((thread) => thread.id === action.threadID);
+      const oldThread = state.threads [threadIndex];
+      /*const newThread = { ES7
+          ...oldThread,
+          messages: oldThread.messages.concat(newMessage)
+      };*/
+      const newThread = Object.assign({}, oldThread, {messages: oldThread.messages.concat(newMessage)}); //<=ES6
+
+
     return {
-      messages: state.messages.concat(action.message),
+        ...state,
+        threads: [
+            ...state.threads.slice(0, threadIndex),
+            newThread,
+            ...state.threads.slice(threadIndex + 1, threadIndex.length),
+        ],
     };
-  } else if (action.type === 'DELETE_MESSAGE') {
+  }
+  else if (action.type === 'DELETE_MESSAGE') {
+      const threadIndex = state.threads.findIndex(
+          (thread) => thread.messages.find(
+              (msg) => (msg.id === action.id)
+          )
+      );
+      const oldThread = state.threads[threadIndex];
+      const newThread = {
+          ...oldThread,
+          messages: oldThread.messages.filter((msg) => (msg.id !== action.id)),
+      };
+
     return {
-      messages: [
-        ...state.messages.slice(0, action.index),
-        ...state.messages.slice(
-          action.index + 1, state.messages.length
-        ),
-      ],
+        ...state,
+        thread: [
+            ...state.threads.slice(0, threadIndex),
+            newThread,
+            ...state.threads.slice(threadIndex + 1, state.threads.length),
+        ]
     };
   } else {
     return state;
   }
 }
 
-const initialState = { messages: [] };
+const initialState_ = { threads: [{
+        messages:
+            [{
+                text: '',
+                timestamp: 0,
+                id: '0',
+            }],
+        id: 'threadID',
+        title: 'Thread title', }]};
+const initialState = {
+    activeThreadID: '1',
+    threads: [
+        {
+            id: '1', //thread ID
+            title: 'Thread title',
+            messages:
+            [
+                {
+                    text: 'Twelve minutes to ignition. Chat ID:1',
+                    timestamp: Date.now(),
+                    id: uuid.v4(),
+                }
+            ],
+        },
+        {
+            id: '2',
+            title: 'Thread ID: 2 title',
+            messages: [
+                {
+                    text: 'Read you loud and clear Watson,' +
+                    'Eleven minutes to ignition. Chat ID:2',
+                    timestamp: Date.now(),
+                    id: uuid.v4(),
+                }
+            ],
+        }
+        ],
+};
 
 const store = createStore(reducer, initialState);
 
@@ -49,24 +118,39 @@ class App extends React.Component {
   componentDidMount() {
     store.subscribe(() => this.forceUpdate());
   }
-
   render() {
-    const messages = store.getState().messages;
+      const state = store.getState();
+      const activeThreadID = state.activeThreadID;
+      const threads = state.threads;
+      const activeThread = threads.find((thread) => thread.id === activeThreadID);
 
+      const tabs = threads.map((thread) => ({
+                  title: thread.title,
+                  active: thread.id === activeThreadID, //boolean
+          }));
     return (
       <div className='ui segment'>
-        <MessageView messages={messages} />
-        <MessageInput />
+          <ThreadTabs tabs={tabs} />
+          <Thread thread={activeThread} />
       </div>
     );
   }
 }
+class ThreadTabs extends React.Component {
+    render() {
+        const tabs = this.props.tabs.map((tab, index) => (
+            <div className={tab.active ? 'active item' : 'item'} key={index}>{tab.title}</div>
+        ));
+        return(
+            <div className='ui tio attached tabular menu'>{tabs}</div>
+        );
 
+    }
+}
 class MessageInput extends React.Component {
   state = {
     value: '',
   };
-
   onChange = (e) => {
     this.setState({
       value: e.target.value,
@@ -76,8 +160,10 @@ class MessageInput extends React.Component {
   handleSubmit = () => {
     store.dispatch({
       type: 'ADD_MESSAGE',
-      message: this.state.value,
+      text: this.state.value,
+        threadID: this.props.threadID,
     });
+
     this.setState({
       value: '',
     });
@@ -102,23 +188,23 @@ class MessageInput extends React.Component {
     );
   }
 }
-
-class MessageView extends React.Component {
-  handleClick = (index) => {
+class Thread extends React.Component {
+  handleClick = (id) => {
     store.dispatch({
       type: 'DELETE_MESSAGE',
-      index: index,
+      id: id,
+        threadID: this.props.threadID,
     });
   };
 
   render() {
-    const messages = this.props.messages.map((message, index) => (
+    const messages = this.props.thread.messages.map((message, index) => (
       <div
         className='comment'
         key={index}
-        onClick={() => this.handleClick(index)}
-      >
-        {message}
+        onClick={() => this.handleClick(message.id)}
+      ><div className='text'>{message.text}<span className='metadata'>@{message.timestamp}</span>
+      </div>
       </div>
     ));
     return (
@@ -126,6 +212,7 @@ class MessageView extends React.Component {
         <div className='ui comments'>
           {messages}
         </div>
+          <MessageInput threadID={this.props.thread.id} />
       </div>
     );
   }
