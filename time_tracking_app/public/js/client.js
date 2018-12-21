@@ -1,5 +1,6 @@
-/* eslint-disable no-console */
-/* eslint-disable no-undef */
+/*
+ An example of how ES5 modularity was reached - creation of a static pure interface (module).
+ */
 window.client = (function () {
   function getTimers(success) {
     return fetch('/api/timers', {
@@ -10,7 +11,6 @@ window.client = (function () {
       .then(parseJSON)
       .then(success);
   }
-
   function createTimer(data) {
     return fetch('/api/timers', {
       method: 'post',
@@ -21,7 +21,6 @@ window.client = (function () {
       },
     }).then(checkStatus);
   }
-
   function updateTimer(data) {
     return fetch('/api/timers', {
       method: 'put',
@@ -32,7 +31,6 @@ window.client = (function () {
       },
     }).then(checkStatus);
   }
-
   function deleteTimer(data) {
     return fetch('/api/timers', {
       method: 'delete',
@@ -43,7 +41,6 @@ window.client = (function () {
       },
     }).then(checkStatus);
   }
-
   function startTimer(data) {
     return fetch('/api/timers/start', {
       method: 'post',
@@ -54,7 +51,6 @@ window.client = (function () {
       },
     }).then(checkStatus);
   }
-
   function stopTimer(data) {
     return fetch('/api/timers/stop', {
       method: 'post',
@@ -65,11 +61,11 @@ window.client = (function () {
       },
     }).then(checkStatus);
   }
-
   function checkStatus(response) {
     if (response.status >= 200 && response.status < 300) {
       return response;
-    } else {
+    }
+    else {
       const error = new Error(`HTTP Error ${response.statusText}`);
       error.status = response.statusText;
       error.response = response;
@@ -77,11 +73,9 @@ window.client = (function () {
       throw error;
     }
   }
-
   function parseJSON(response) {
     return response.json();
   }
-
   return {
     getTimers,
     createTimer,
@@ -89,5 +83,5 @@ window.client = (function () {
     startTimer,
     stopTimer,
     deleteTimer,
-  };
+  }; //export of public methods into window.client obj.
 }());
