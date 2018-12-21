@@ -1,7 +1,7 @@
 import React from 'react';
-import thunkMiddleware from 'redux-thunk';
+import thunkMiddleware from 'redux-thunk'; //
 import { connect, Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware } from 'redux'; //async actions support
 import { reducer } from './11-redux-reducer.js';
 import { fetchPeople, savePeople } from './11-redux-actions.js';
 
@@ -34,12 +34,11 @@ function mapStateToProps(state) {
     people: state.people,
     saveStatus: state.saveStatus,
   };
-}
-
+} //store.* <=> Cmp.props.*
 function mapDispatchToProps(dispatch) {
   return {
     onSubmit: (people) => {
       dispatch(savePeople(people));
     },
   };
-}
+} //props.onSubmit now dispatches async actions.

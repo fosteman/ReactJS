@@ -1,20 +1,22 @@
 import React from 'react';
 import uuid from 'uuid';
-import { createStore } from 'redux';
+import moment from 'moment';
+import { createStore, combineReducers } from 'redux';
 
-
-function reducer(state = {}, action) {
+const reducer = combineReducers({
+    activeThreadId: activeThreadIdReducer,
+    threads: threadsReducer,
+});
+/*function reducer(state = {}, action) {
     return {
-        activeThreadId: activeThreadIdReducer(state.activeThreadId, action),
-        threads: threadsReducer(state.threads, action),
+
     };
-}
-const store = createStore(reducer);
+}*/
 function messagesReducer(state = [] , action) {
     if (action.type === 'ADD_MESSAGE') {
         const newMessage = {
             text: action.text,
-            timestamp: Date.now(),
+            timestamp: moment().format(),
             id: uuid.v4(),
         };
         return state.concat(newMessage);
@@ -83,6 +85,7 @@ function threadsReducer(state = [
        }
    }
 }
+
 function findThreadIndex(threads, action) {
     switch (action.type) {
         case 'ADD_MESSAGE': {
@@ -93,29 +96,7 @@ function findThreadIndex(threads, action) {
         }
     }
 }
-/*const initialState = {
-    activeThreadId: '1-fca2',
-    threads: [
-        {
-            id: '1-fca2',
-            title: 'Buzz Aldrin',
-            messages: [
-                {
-                    text: 'Twelve minutes to ignition.',
-                    timestamp: Date.now(),
-                    id: uuid.v4(),
-                },
-            ],
-        },
-        {
-            id: '2-be91',
-            title: 'Michael Collins',
-            messages: [],
-        },
-    ],
-};
-*/
-
+const store = createStore(reducer);
 
 class App extends React.Component {
     componentDidMount() {

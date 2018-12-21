@@ -1,4 +1,5 @@
-/* eslint-disable no-use-before-define */
+/* eslint-disable no-use-before-define
+* ASYNC action creators middle-ware 'redux-thunk*/
 export const FETCH_PEOPLE_REQUEST = 'FETCH_PEOPLE_REQUEST';
 function fetchPeopleRequest () {
   return {type: FETCH_PEOPLE_REQUEST};
@@ -26,7 +27,7 @@ function savePeopleSuccess (people) {
 
 export function fetchPeople () {
   return function (dispatch) {
-    dispatch(fetchPeopleRequest())
+    dispatch(fetchPeopleRequest());
     apiClient.loadPeople().then((people) => {
       dispatch(fetchPeopleSuccess(people))
     })
@@ -35,7 +36,7 @@ export function fetchPeople () {
 
 export function savePeople (people) {
   return function (dispatch) {
-    dispatch(savePeopleRequest())
+    dispatch(savePeopleRequest());
     apiClient.savePeople(people)
       .then((resp) => { dispatch(savePeopleSuccess(people)) })
       .catch((err) => { dispatch(savePeopleFailure(err)) })
@@ -55,7 +56,6 @@ const apiClient = {
 
   savePeople: function (people) {
     const success = !!(this.count++ % 2);
-
     return new Promise(function (resolve, reject) {
       setTimeout( () => {
         if (!success) return reject({success});
@@ -67,4 +67,4 @@ const apiClient = {
   },
 
   count: 1
-}
+};
