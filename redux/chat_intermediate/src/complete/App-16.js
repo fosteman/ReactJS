@@ -140,8 +140,8 @@ const mapDispatchToTabsProps = (dispatch) => (
 );
 
 const ThreadTabs = connect(
-  mapStateToTabsProps,
-  mapDispatchToTabsProps
+    mapStateToTabsProps,
+    mapDispatchToTabsProps
 )(Tabs);
 
 class TextFieldSubmit extends React.Component {
@@ -213,13 +213,11 @@ const Thread = (props) => (
   </div>
 );
 
-const mapStateToThreadProps = (state) => (
-  {
+const mapStateToThreadProps = (state) => ({
     thread: state.threads.find(
       t => t.id === state.activeThreadId
     ),
-  }
-);
+  });
 
 const mapDispatchToThreadProps = (dispatch) => (
   {
@@ -229,7 +227,7 @@ const mapDispatchToThreadProps = (dispatch) => (
         id: id,
       })
     ),
-    dispatch: dispatch,
+    dispatch,
   }
 );
 

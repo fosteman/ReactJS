@@ -14,7 +14,6 @@ class App extends React.Component {
 
   addItem = (e) => {
     e.preventDefault();
-
     this.setState({
       items: this.state.items.concat(
         this.state.item
@@ -42,7 +41,7 @@ class App extends React.Component {
                 <tr
                   key={idx}
                 >
-                  <td>{item}</td>
+                  <td>{item}</td><td>{item + 'second td'}</td>
                 </tr>
               ))
             }
