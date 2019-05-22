@@ -4,9 +4,11 @@
 /dist
 /tmp
 /out-tsc
+workspace.xml
 
 # dependencies
 /node_modules
+node_modules
 .DS_Store
 # IDEs and editors
 /.idea
