@@ -13,11 +13,13 @@ export class MessageInput extends React.Component {
     // Handles submitted message to components parent via propagation
     handleSubmit = () => {
         this.props.upStreamMessage(this.state.value);
+        // Clear the input field
+        this.setState({ value: ''});
     };
 
     render() {
         return (
-            <div className='ui input'>
+            <div className='ui input center'>
                 <input
                     onChange={this.onChange}
                     value={this.state.value}
