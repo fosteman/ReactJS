@@ -16,16 +16,30 @@ To install:
 npm install gulp@3.9.1 semantic-ui
 cd semantic/
 gulp build
+mv ../semantic ../src/semantic
 ```
-Running the gulp build tools will compile CSS and Javascript for use in your project.
+Running the gulp build tools will compile CSS and Javascript for use in your project that are required to be copied into `src/` manually, for React will reject any imports from outside `src/`.
 
-Then, include built distributive, jQuery into `index.html`
+Then, include built distributive into `index.js`
 ```html
-<link rel="stylesheet" type="text/css" href="../semantic/dist/semantic.min.css">
-<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
-<script src="semantic/dist/semantic.min.js"></script>
+import './semantic/dist/semantic.css';
 ```
-            
+After changes, `index.js` should look like:
+```jsx harmony
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import './semantic/dist/semantic.css';
+import App from './App';
+import * as serviceWorker from './serviceWorker';
+
+ReactDOM.render(<App />, document.getElementById('root'));
+
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: https://bit.ly/CRA-PWA
+serviceWorker.unregister();
+```
 ## Running the app
 
 In the project directory, you can run:
@@ -87,11 +101,13 @@ export class MessageInput extends React.Component {
     // Handles submitted message to components parent via propagation
     handleSubmit = () => {
         this.props.upStreamMessage(this.state.value);
+        // Clear the input field
+        this.setState({ value: ''});
     };
 
     render() {
         return (
-            <div className='ui input'>
+            <div className='ui input center'>
                 <input
                     onChange={this.onChange}
                     value={this.state.value}
@@ -122,7 +138,11 @@ Now, that initial children are settled on the bottom of the hierarchy (think pyr
  
  Note, that whenever `this.state` changes, all underlying (pyramid foundation) components will be re-rendered accordingly, for data flows downwards by design, to the contrary of manually propagating (upStreaming) the data via handlers.
 ```jsx harmony
-export default class App extends React.Component {
+import React from 'react';
+import { MessageView } from './MessageView';
+import { MessageInput } from './MessageInput.js';
+
+class App extends React.Component {
   constructor(props) {
     // Initializes superclass
     super(props);
@@ -149,6 +169,7 @@ export default class App extends React.Component {
     );
   }
 }
+export default App;
 ```
 The app is now running, although any state will be lost with page refresh.
  
