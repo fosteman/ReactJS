@@ -1,7 +1,7 @@
 import React from 'react'
-import Link from 'Link'
+import Link from './Link'
 
-const NavigationBar = (
+const NavigationBar = () => (
     <nav className="navbar navbar-default">
         <div className="container-fluid">
             <div className="navbar-header">
