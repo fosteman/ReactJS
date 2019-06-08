@@ -4,6 +4,11 @@ This repo contains instructions to build an app to leverage team management. [Mo
 
 
 Semantics and Styling are default inline bootstrap, however, there are several excellent styling frameworks for React: [Semantic-UI](), [evergreen](), [Material]()
+## Material UI
+To install:
+```bash
+npm install @material-ui/core
+```
 
 ## Dependencies
 Run the following commands to bootstrap your project directory and install dependencies
