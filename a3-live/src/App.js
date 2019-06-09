@@ -40,7 +40,7 @@ function App() {
     <Container maxWidth="sm">
       <div className="row">
         {
-          mockTeams.map(
+          Teams.map(
               team =>
                   <TeamInterface
                       Team={team}
