@@ -34,6 +34,8 @@ function TeamInterface(props) {
     const classes = useStyles();
     const [TeamMembers, setTeamMembers] = React.useState(props.Team.Employees);
     const [TeamLead, setTeamLead] = React.useState(props.TeamLead);
+    let assignedProjects = props.Team.Projects.map(assigned => props.Projects.find(prj => prj._id === assigned._id) );
+    const [Projects, setProjects] = React.useState(assignedProjects);
     useEffect(() => {
         console.log('Effect: ', props);
     });
