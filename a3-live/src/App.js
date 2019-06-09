@@ -45,7 +45,7 @@ function App() {
                   <TeamInterface
                       Team={team}
                       Employees={mockEmployees}
-                      Project={mockProjects}
+                      Projects={mockProjects}
                   />
               )
             }
