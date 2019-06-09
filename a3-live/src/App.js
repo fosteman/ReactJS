@@ -31,7 +31,7 @@ function App() {
 
 
   return (<React.Fragment>
-    <Container width="100%" Padding="0px">
+    <Container>
       <NavigationBar />
         <Box display="flex"
              alignContent="flex-start"
