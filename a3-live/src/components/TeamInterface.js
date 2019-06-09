@@ -39,7 +39,7 @@ React.useEffect(() => {
 
 function TeamInterface(props) {
     const classes = useStyles();
-    const [TeamMembers, setTeamMembers] = React.useState([]);
+    const [TeamMembers, setTeamMembers] = React.useState(props.Team.Employees);
     const [TeamLead, setTeamLead] = React.useState(props.TeamLead);
     useEffect(() => {
         console.log('Effect: ', props);
