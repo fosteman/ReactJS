@@ -52,7 +52,7 @@ function TeamInterface(props) {
     function handleSave(event) {}
     function EmployeeFullName(id) {
         let foundEmployee = props.Employees.find(
-            function(emp) {return emp._id === id}
+           emp => emp._id === id
         );
         if (foundEmployee === undefined) return "undefined Employee. Check database";
         return foundEmployee.FirstName + foundEmployee.LastName
