@@ -14,20 +14,20 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
+import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles(theme => ({
-    root: {
-        display: 'flex',
-        flexWrap: 'wrap',
+    formControl: {
+        maxWidth: '100%'
     },
-
     selectEmpty: {
         marginTop: theme.spacing(2),
     },
     card: {
-        maxWidth: 345,
-        marginBottom: theme.spacing(2)
+        maxWidth: "30vh",
+        margin: theme.spacing(1),
     },
+    button: {}
 }));
 
 function TeamInterface(props) {
@@ -56,39 +56,45 @@ function TeamInterface(props) {
         return foundEmployee.FirstName + foundEmployee.LastName
     }
     return (
-        <div className="col-md-4">
             <Card className={classes.card}>
-                <CardHeader title={props.Team.TeamName}>
-                    <Button onClick={handleSave} variant="contained" color="primary" className={classes.button}>
-        Save
-      </Button>
+                <CardHeader title={props.Team.TeamName}
+                            action={
+                                <Button
+                                    onClick={handleSave}
+                                    variant="contained"
+                                    color="primary"
+                                    className={classes.button}
+                                >
+                                    Save
+                                </Button>
+                            }>
                 </CardHeader>
                 <CardContent>
                     <FormControl variant="outlined" className={classes.formControl}>
                         <InputLabel>Team Members</InputLabel>
-                            <Select
-                                multiple
-                                value={TeamMembers}
-                                onChange={handleTeamMemberChange}
-                                input={<Input />}
-                                renderValue={selected => selected.join(', ')}
-                            >
-                                {
-                                    props.Employees.map(emp => (
-                                        <MenuItem key={emp._id} value={emp._id}>
-                                            <Checkbox checked={props.Team.Employees.find(TeamMember => TeamMember._id === emp._id) === true} />
-                                            <ListItemText primary={EmployeeFullName(emp._id)} />
-                                        </MenuItem>
-                                    ))
-                                }
-                                }
+                        <Select
+                            variant="outlined"
+                            id="team-members-select"
+                            multiple
+                            autoWidth={true}
+                            value={TeamMembers}
+                            onChange={handleTeamMemberChange}
+                            input={<Input />}
+                            renderValue={function(selected) {
+                                return EmployeeFullName(selected);
+                            }
+                            }
+                        >
+                            {props.Employees.map(emp =>
+                                <MenuItem key={emp._id} value={emp._id}>
+                                    <ListItemText primary={EmployeeFullName(emp._id)} />
+                                </MenuItem>
+                                )}
                             </Select>
                     </FormControl>
 
                 </CardContent>
             </Card>
-        </div>
-
     );
 }
 export default TeamInterface;
