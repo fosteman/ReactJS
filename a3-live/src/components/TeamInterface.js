@@ -52,14 +52,16 @@ function TeamInterface(props) {
         let foundEmployee = props.Employees.find(
            emp => emp._id === id
         );
-        if (foundEmployee === undefined) return "undefined Employee. Check database";
+        if (!foundEmployee) return "undefined Employee. Check database";
         return foundEmployee.FirstName + foundEmployee.LastName
     }
     return (
         <div className="col-md-4">
             <Card className={classes.card}>
-                <CardHeader title="Here's TeamName">
-                    <button className="btn btn-primary btn-xs pull-right" onClick={handleSave}>Save</button>
+                <CardHeader title={props.Team.TeamName}>
+                    <Button onClick={handleSave} variant="contained" color="primary" className={classes.button}>
+        Save
+      </Button>
                 </CardHeader>
                 <CardContent>
                     <FormControl variant="outlined" className={classes.formControl}>
