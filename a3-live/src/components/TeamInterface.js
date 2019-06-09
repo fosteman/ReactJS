@@ -24,7 +24,8 @@ const useStyles = makeStyles(theme => ({
         marginTop: theme.spacing(2),
     },
     card: {
-        maxWidth: "30vh",
+        width: "15vw",
+        minWidth: "180px",
         margin: theme.spacing(1),
     },
     button: {}
@@ -92,7 +93,6 @@ function TeamInterface(props) {
                                 )}
                             </Select>
                     </FormControl>
-
                 </CardContent>
             </Card>
     );
