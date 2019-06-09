@@ -47,6 +47,8 @@ function TeamInterface(props) {
     }
     function handleSave(event) {}
     function EmployeeFullName(id) {
+            if (Array.isArray(id)) return id.map(_id => props.Employees.find(emp => emp._id === _id)).map(employee => employee.FirstName + ' ' +  employee.LastName).join(', ');
+
         let foundEmployee = props.Employees.find(
            emp => emp._id === id
         );
