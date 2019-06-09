@@ -1,5 +1,6 @@
-const data = {
-    Teams: [{
+const mockData = {
+    Teams: [
+        {
         "Projects": ["599af650fc13ae7e60000078", "599af650fc13ae7e60000079"],
         "Employees": ["5997456604a898b529b5ed3f", "5997456604a898b529b5ed40", "5997456604a898b529b5ed41", "5997456604a898b529b5ed42", "5997456604a898b529b5ed43", "5997456604a898b529b5ed44", "5997456604a898b529b5ed45", "5997456604a898b529b5ed46", "5997456604a898b529b5ed47", "5997456604a898b529b5ed48", "5997456604a898b529b5ed49", "5997456604a898b529b5ed4a", "5997456604a898b529b5ed4b", "5997456604a898b529b5ed4c", "5997456604a898b529b5ed4d", "5997456604a898b529b5ed4e", "5997456604a898b529b5ed4f", "5997456604a898b529b5ed50", "5997456604a898b529b5ed51", "5997456604a898b529b5ed52"],
         "_id": "599b0af0fc13ae20630004a6",
@@ -105,7 +106,8 @@ const data = {
         "TeamLead": "5997456604a898b529b5ee57",
         "__v": 0
     }],
-    Employees: [{
+    Employees: [
+        {
         "_id": "5997456604a898b529b5ed3f",
         "FirstName": "Zsa zsa",
         "LastName": "Mannering",
@@ -6106,7 +6108,8 @@ const data = {
         "SalaryBonus": 14211,
         "__v": 0
     }],
-    Projects: [{
+    Projects: [
+        {
         "_id": "599af650fc13ae7e60000064",
         "ProjectName": "Project 1",
         "ProjectDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque lobortis vel nunc non tincidunt. Proin elementum facilisis ipsum id tincidunt. Phasellus ut orci placerat, cursus ante sed, feugiat elit. Nullam at velit metus. Morbi suscipit fringilla tellus, id tristique massa mollis a. Cras non tincidunt diam. Morbi rutrum enim eget facilisis aliquet. Ut mattis euismod fermentum. Vestibulum ut tincidunt purus, et porttitor mi.",
@@ -6317,5 +6320,5 @@ const data = {
         "ProjectEndDate": null,
         "__v": 0
     }],
-}
-export default data
+};
+export default mockData

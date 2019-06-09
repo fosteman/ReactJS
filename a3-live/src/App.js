@@ -1,13 +1,14 @@
-import React, {Component, useState, useEffect} from 'react'
+import React, {useState, useEffect} from 'react'
 import axios from 'axios'
 import NavigationBar from './components/NavigationBar'
 import TeamInterface from './components/TeamInterface'
+import Box from '@material-ui/core/Box'
+import Container from '@material-ui/core/Container'
 
-//Mocking data from json
-import data from './mockData'
-let mockTeams = data.Teams;
-let mockEmployees = data.Employees;
-let mockProjects = data.Projects;
+import mockData from './mockData'
+let mockTeams = mockData.Teams;
+let mockEmployees = mockData.Employees;
+let mockProjects = mockData.Projects;
 //const url = "https://fosteman-mongo-backend.herokuapp.com/";
 
 function App() {
@@ -27,25 +28,29 @@ function App() {
     this.state.loaded = true;
   */
   });
-  //TODO: refactor for use with hooks and mockData
-  //TODO: combine employees with teams and projects
+
 
   return (
     <React.Fragment>
       <NavigationBar />
-
-    <div className="container" id="main">
-      <div className="row">
-            {
-              this.state.Teams.data &&
-              this.state.Teams.data.map(
-                   team => {
-                    return <TeamInterface team={team} employeeList={Employees} project={project}/>
-                  }
+      <Container maxWidth="100%">
+        <Box display="flex"
+             alignContent="flex-start"
+             flexDirection="row"
+             flexWrap="wrap"
+        >
+        {
+          Teams.map(
+              team =>
+                  <TeamInterface
+                      Team={team}
+                      Employees={mockEmployees}
+                      Projects={mockProjects}
+                  />
               )
             }
-          </div>
-    </div>
+          </Box>
+    </Container>
 
       <div id="genericModal" className="modal fade" tabIndex="-1" role="dialog">
         <div className="modal-dialog" role="document">
@@ -60,7 +65,7 @@ function App() {
         </div>
       </div>
     </React.Fragment>
-    );
+  );
   }
 
-export default App;
+export default App

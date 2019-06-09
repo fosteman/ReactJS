@@ -12,7 +12,7 @@ npm install @material-ui/core
 
 ## Dependencies
 Run the following commands to bootstrap your project directory and install dependencies
-```javascript
+```bash
 npx create-react-app a3-react
 npm i axios
 ```
@@ -24,7 +24,7 @@ To build an app, one need to understand component hierarchy.
 Glance over the image of application above, and discern components. React is about composable components, so naming them semantically is advised. There're several of them:
 - `<NavigationBar>` - the top line, where links to other pages will reside
   - `<Link>` - 'Team Details', name of the app linked to the (only) main page
-- `<TeamContainer>` - repeating container which presents controls over a team.
+- `<TeamInterface>` - repeating container which presents controls over a team.
   - `<TeamHeader>` - holds team name
   - `<SaveButton>` - syncs changes to Backend
   - `<MultiSelect>` - selectors for <strong>Team Lead</strong>, <strong>Team Members</strong>, <strong>Projects</strong>
