@@ -1,13 +1,10 @@
-import React, {Component, useState, useEffect} from 'react'
+import React, {useState, useEffect} from 'react'
 import axios from 'axios'
 import NavigationBar from './components/NavigationBar'
 import TeamInterface from './components/TeamInterface'
-
-//MaterialUI
+import Box from '@material-ui/core/Box'
 import Container from '@material-ui/core/Container'
 
-
-//Mocking data from json
 import mockData from './mockData'
 let mockTeams = mockData.Teams;
 let mockEmployees = mockData.Employees;
@@ -36,9 +33,12 @@ function App() {
   return (
     <React.Fragment>
       <NavigationBar />
-
-    <Container maxWidth="sm">
-      <div className="row">
+      <Container maxWidth="100%">
+        <Box display="flex"
+             alignContent="flex-start"
+             flexDirection="row"
+             flexWrap="wrap"
+        >
         {
           Teams.map(
               team =>
@@ -49,7 +49,7 @@ function App() {
                   />
               )
             }
-          </div>
+          </Box>
     </Container>
 
       <div id="genericModal" className="modal fade" tabIndex="-1" role="dialog">
@@ -68,4 +68,4 @@ function App() {
   );
   }
 
-export default App;
+export default App
