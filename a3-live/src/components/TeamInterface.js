@@ -29,13 +29,6 @@ const useStyles = makeStyles(theme => ({
         marginBottom: theme.spacing(2)
     },
 }));
-/*
-const inputLabel = React.useRef(null); // TODO: Lookup in docs
-const [labelWidth, setLabelWidth] = React.useState(0);
-React.useEffect(() => {
-        setLabelWidth(inputLabel.current.offsetWidth);
-    }, []);
-*/
 
 function TeamInterface(props) {
     const classes = useStyles();
