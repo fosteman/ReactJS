@@ -1,6 +1,6 @@
 {
-  "name": "a3-live",
-  "version": "0.1.0",
+  "name": "team-management",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.0.2",

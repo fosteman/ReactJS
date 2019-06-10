@@ -18,7 +18,7 @@ npm i axios
 ```
 ## Component Structure
 To build an app, one needs to understand component hierarchy
-![Bootstrap]()
+![MaterialDesign](team-management-material-ui.gif)
 <em>What's being built on this site? </em>
 
 Glance over the image of application above, and discern components. React is about composable components, so naming them semantically is advised. There're several of them:
@@ -26,112 +26,262 @@ Glance over the image of application above, and discern components. React is abo
   - `<Link>` - 'Team Details', name of the app linked to the (only) main page
 - `<TeamInterface>` - repeating card which presents controls over a team
   - `<TeamHeader>` - holds team name and **Save** button
-    - `<SaveButton>` - syncs changes to Backend
+    - `<SaveButton>` - saves changes
   - `<MultiSelect>` - selectors for 
     - Team Lead
     - Team Members
     - Projects
   
-Now, that components to be built are identified, let's create folder `components` containing 
+Now, that React Modules exporting components to be built are identified, let's create folder `components` containing 
 - `NavigationBar.js`
 - `TeamInterface.js`
 ```bash
 mkdir components
-touch components/NavigationBar.js components/Link.js
+touch components/NavigationBar.js components/TeamInterface.js
 ```
-### `components/Link.js`
-Building component hierarchy is like erecting a pyramid - start from foundation to the topmost block.
+### Building component hierarchy 
+...Is like erecting a pyramid - It's a good idea to begin from foundation to the topmost block.
 
-`<Link>` is the smallest component in the app. We could utilize Material-UI `<Link>`, but I much believe we'll reuse our own later.
+### `components/NavigationBar.js`
+`<Link>` is the smallest component in the app. We will utilize Material-UI `<Link>`.
+
 ```jsx harmony
 import React from 'react'
+import Link from '@material-ui/core/Link'
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import { makeStyles } from '@material-ui/core/styles';
+import { createMuiTheme } from '@material-ui/core/styles';
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 
-const Link = props => <a className="navbar-brand" href={props.to}>{props.children}</a>;
+const HeaderTheme = createMuiTheme({
+    palette: {
+        textPrimary: {
+            main: '#e3f2fd',
+            contrastText: '#fff',
+        }}});
+const useStyles = makeStyles({
+    root: {
+        flexGrow: 1,
+    }
 
-export default Link;
+});
+
+function NavigationBar() {
+    const classes = useStyles();
+    return (
+        <MuiThemeProvider theme={HeaderTheme}>
+            <AppBar className={classes.root} position="static">
+                <Toolbar >
+                    <Link to="#" variant="h4" color="white">Assignment 3 - Team Details</Link>
+                </Toolbar>
+            </AppBar>
+        </MuiThemeProvider>
+    );
+}
+export default NavigationBar
 ```
 To create React Component Module (i.e. js module), `react` core library must be imported, otherwise JSX code will not be recognized
 
-In 3 declarations <em>React Component Module</em> `<Link>` is ready for re-use!
-
-### `components/NavigationBar`
-
-For now, I cannot see any state, nor functions this component should perform, thus it is an <strong>element</strong>.
-
-`components/Link` must be imported as a React Component, and provided with children (in our case - text 'Team Details') and props ('`href="#"`, it's our main page)
-
-```jsx harmony
-import React from 'react'
-import Link from 'Link'
-
-const NavigationBar = (
-    <nav className="navbar navbar-default">
-        <div className="container-fluid">
-            <div className="navbar-header">
-                <Link to={"#"}>Assignment 3 - Team Details</Link>
-            </div>
-        </div>
-    </nav>
-);
-
-export default NavigationBar
-```
-### `components/TeamInterface`
+### `components/TeamInterface.js`
 Card with controls to TeamInterface includes looping through arrays to build `<select>` elements
 ```jsx harmony
-import React, { Component } from 'react'
-import Select from 'react-select'
+import React, { Component, useEffect, useState } from 'react'
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import ListItemText from '@material-ui/core/ListItemText';
+import Select from '@material-ui/core/Select';
+import { makeStyles } from '@material-ui/core/styles';
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
+import CardContent from "@material-ui/core/CardContent";
+import Button from '@material-ui/core/Button';
+import axios from "axios";
+import Popover from '@material-ui/core/Popover';
+import Typography from '@material-ui/core/Typography';
 
-class TeamInterface extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            ...props.team,
+const useStyles = makeStyles(theme => ({
+    formControl: {
+        maxWidth: '100%',
+        minWidth: 120,
+        marginBottom: theme.spacing(2)
+    },
+    selectEmpty: {
+        marginTop: theme.spacing(2),
+    },
+    card: {
+        width: "15vw",
+        minWidth: "180px",
+        margin: theme.spacing(1),
+    },
+    SaveButton: {
+        padding: theme.spacing(2),
+
+    },
+    typography: {
+        padding: theme.spacing(2)
+    }
+}));
+
+function TeamInterface(props) {
+    const classes = useStyles();
+    const [TeamMembers, setTeamMembers] = React.useState(props.Team.Employees);
+    const [TeamLead, setTeamLead] = React.useState(props.Team.TeamLead);
+    let assignedProjects = props.Team.Projects.map(assignedID => props.Projects.find(prj => prj._id === assignedID));
+    const [Projects, setProjects] = React.useState(assignedProjects);
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [SavePopoverResponse, setSavePopoverState] = React.useState("Loading...");
+    useEffect(() => {});
+    function handleTeamLeadChange(event) {
+        setTeamLead(event.target.value)
+    }
+    function handleTeamMemberChange(event) {
+        setTeamMembers(event.target.value)
+    }
+    function handleProjectChange(event) {
+        setProjects(event.target.value)
+    }
+    function handlePopoverClose(event) {
+        setAnchorEl(null);
+    }
+    const open = Boolean(anchorEl);
+    const id = open ? 'save-popover' : null;
+    function handleSave(event) {
+        setAnchorEl(event.currentTarget);
+        const putData = async () => {
+            //debugger;
+            await axios.put(props.Url + 'team/' + props.Team._id,
+                {
+                    Projects,
+                    Employees: TeamMembers,
+                    TeamLead
+                })
+                .then(response => setSavePopoverState(response.data.message));
+        };
+        putData();
+
+    }
+    //PopoverManagement ends here
+    /**
+     * @return {string}
+     */
+    function EmployeeFullName(id) {
+        if (Array.isArray(id)) return id.map(_id => props.Employees.find(emp => emp._id === _id)).map(employee => employee.FirstName + ' ' +  employee.LastName).join(', ');
+        let foundEmployee = props.Employees.find(emp => emp._id === id);
+        if (foundEmployee) return foundEmployee.FirstName + ' ' + foundEmployee.LastName;
+        return `Employee with id: ${id} doesn't exist!`;
+    }
+    /**
+     * @return {string}
+     */
+    function ProjectName(id) {
+        if (Array.isArray(id)) {
+            let assignedProjects = id.map((assignedPrj => props.Projects.find(prj => prj._id === assignedPrj._id)));
+            if (assignedProjects) return assignedProjects.map(assignedPrj => assignedPrj.ProjectName).join(', ');
+            else return `Projects: ${id} - don't exist!`;
+        } else {
+            let assignedProject = props.Projects.find(prj => prj._id === id);
+            if (assignedProject) return assignedProject.ProjectName;
+            else return `Project with id: ${id} doesn't exist!`;
         }
     }
-    handleSave(event) {}
-    // TODO: Trace bullets. Either use multi-select, either Array.map
-    render() {
-        return (
-            <div className="col-md-4">
-                <div className="panel panel-default">
-                    <div className="panel-heading">
-                        <strong>{this.props.team.TeamName}</strong>
-                        <button className="btn btn-primary btn-xs pull-right" onClick={this.handleSave}>Save</button>
-                    </div>
-                    <div className="panel-body">
-                        <h5>Team Lead</h5>
-                        <select className="single" >
-                            {
-                                this.props.team.Employees.map(emp => (
-                                    <option >
-                                        {emp.FirstName + emp.LastName}
-                                    </option>
-                                    )
-                                )
-                            }
-                      </select>
-                        <h5>Team Members</h5>
-                        <select className="multiple">
-                            {
-                                this.props.team.Employees.map(emp =>
-                                    <option>
-                                        {emp.FirstName}
-                                    </option>
-                                )
-                            }
-                        </select>
-                     <h5>Projects</h5>
-                        <Select
-    className="multiple"
-    selectedOptions={this.state.Projects}
-    options={this.state.Projects}
-    />
-                    </div>
-                </div>
-            </div>
-        );
-    }
+    return (
+        <Card className={classes.card}>
+            <CardHeader title={props.Team.TeamName}
+                        action={
+                            <React.Fragment>
+                            <Button
+                                aria-describedby={id}
+                                onClick={handleSave}
+                                variant="contained"
+                                color="primary"
+                                className={classes.button}
+                            >
+                                Save
+                            </Button>
+                            <Popover
+                            id={id}
+                            open={open}
+                            anchorEl={anchorEl}
+                            onClose={handlePopoverClose}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'right',
+                            }}
+                            transformOrigin={{
+                                vertical: 'center',
+                                horizontal: 'center',
+                            }}
+                            >
+                            <Typography className={classes.typography}>{SavePopoverResponse}</Typography>
+                            </Popover>
+                            </React.Fragment>
+                        }>
+            </CardHeader>
+            <CardContent>
+                <FormControl variant="outlined" className={classes.formControl}>
+                    <InputLabel htmlFor="team-lead-select">Team Lead</InputLabel>
+                    <Select
+                        variant="outlined"
+                        id="team-lead-select"
+                        single="true"
+                        autoWidth={true}
+                        value={TeamLead}
+                        onChange={handleTeamLeadChange}
+                        input={<Input />}
+                        renderValue={selected => EmployeeFullName(selected)}
+                    >
+                        {
+                            props.Employees.map(emp =>
+                                <MenuItem key={emp._id} value={emp._id}>
+                                    <ListItemText primary={EmployeeFullName(emp._id)} />
+                                </MenuItem>)
+                        }
+                    </Select>
+                </FormControl>
+                <FormControl variant="outlined" className={classes.formControl}>
+                    <InputLabel htmlFor="team-members-select">Team Members</InputLabel>
+                    <Select
+                        variant="outlined"
+                        id="team-members-select"
+                        multiple
+                        autoWidth={true}
+                        value={TeamMembers}
+                        onChange={handleTeamMemberChange}
+                        input={<Input />}
+                        renderValue={selected => EmployeeFullName(selected)}
+                    >
+                        {props.Employees.map(emp =>
+                            <MenuItem key={emp._id} value={emp._id}>
+                                <ListItemText primary={EmployeeFullName(emp._id)} />
+                            </MenuItem>
+                        )}
+                    </Select>
+                </FormControl>
+                <FormControl variant="outlined" className={classes.formControl}>
+                    <InputLabel htmlFor="projects-select">Projects</InputLabel>
+                    <Select
+                        variant="outlined"
+                        id="projects-select"
+                        multiple
+                        autoWidth={true}
+                        value={Projects}
+                        onChange={handleProjectChange}
+                        input={<Input />}
+                        renderValue={selected => ProjectName(selected)}
+                    >
+                        {Projects.map(prj =>
+                            <MenuItem key={prj._id} value={prj._id}>
+                                <ListItemText primary={ProjectName(prj._id)} />
+                            </MenuItem>
+                        )}
+                    </Select>
+                </FormControl>
+            </CardContent>
+        </Card>
+    );
 }
 export default TeamInterface
 ```
@@ -140,73 +290,63 @@ export default TeamInterface
 Root module for application binds together components above.
 It is a stateful component, API is fetched in `componentDidMount` lifecycle method. The data is then passed down children via `props`
 ```jsx harmony
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import axios from 'axios'
 import NavigationBar from './components/NavigationBar'
 import TeamInterface from './components/TeamInterface'
+import Box from '@material-ui/core/Box'
+import Container from '@material-ui/core/Container'
 const url = "https://fosteman-mongo-backend.herokuapp.com/";
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      Teams: [],
-      Employees: [],
-      Projects: [],
-      loaded: false
-    }
-  }
-  componentDidMount() {
-    axios.get(url + 'teams-raw')
-        .then(Teams => this.setState({Teams}))
-        .catch(err => console.error(err));
-    axios.get(url + 'employees')
-        .then(Employees => this.setState({Employees}))
-        .catch(err => console.error(err));
-    axios.get(url + 'projects')
-        .then(Projects => this.setState({Projects}))
-        .catch(err => console.error(err));
-    this.state.loaded = true;
-  }
-  render() {
-    return (
-    <React.Fragment>
+function App() {
+  const [Teams, loadTeams] = useState([]);
+  const [Employees, loadEmployees] = useState([]);
+  const [Projects, loadProjects] = useState([]);
+  const [LoadStatus, setLoadStatus] = useState(false);
+
+  useEffect( () => {
+    const fetchData = async () => {
+      let t = await axios.get(url + 'teams-raw');
+      loadTeams(t.data);
+      let e = await axios.get(url + 'employees');
+      loadEmployees(e.data);
+      let p = await axios.get(url + 'projects');
+      loadProjects(p.data);
+      setLoadStatus(true);
+    };
+    fetchData();
+  }, []);
+
+
+  return (<React.Fragment>
+    <Container>
       <NavigationBar />
-
-    <div className="container" id="main">
-      {!this.state.loaded ? null :
-          <div className="row">
-            {
-              this.state.Teams.data &&
-              this.state.Teams.data.map(
-                   (team) => {
-                    //TODO: combine employees with teams, find project
-                    let employeeList = this.state.Employees;
-                    let project = this.state.Projects;
-                    return <TeamInterface team={team} employeeList={employeeList} project={project}/>
-                  }
-              )
+        <Box display="flex"
+             alignContent="flex-start"
+             flexDirection="row"
+             flexWrap="wrap"
+        >
+        { LoadStatus ?
+          Teams.map(
+              team =>
+                  <TeamInterface
+                      key={team._id}
+                      Team={team}
+                      Employees={Employees}
+                      Projects={Projects}
+                      Url={url}
+                  />
+              ) :
+            (
+                <p>{
+                  // TODO: Loading
+                  }</p>
+            )
             }
-          </div>
-      }
-    </div>
-
-      <div id="genericModal" className="modal fade" tabIndex="-1" role="dialog">
-        <div className="modal-dialog" role="document">
-          <div className="modal-content">
-            <div className="modal-header">
-              <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-              <h4 className="modal-title"/></div>
-            <div className="modal-body"/>
-          </div>
-        </div>
-      </div>
-    </React.Fragment>
-    );
-  }
+          </Box>
+    </Container>
+    </React.Fragment>);
 }
-export default App;
+export default App
 ```
 

@@ -43,11 +43,9 @@ function TeamInterface(props) {
     const [TeamLead, setTeamLead] = React.useState(props.Team.TeamLead);
     let assignedProjects = props.Team.Projects.map(assignedID => props.Projects.find(prj => prj._id === assignedID));
     const [Projects, setProjects] = React.useState(assignedProjects);
-    const [anchorEl, setAnchorEl] = React.useState(null); //popover state
-    const [SavePopoverResponse, setSavePopoverState] = React.useState("emptyResponse");
-    useEffect(() => {
-        console.log('Effect on TeamI: ', props);
-    });
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [SavePopoverResponse, setSavePopoverState] = React.useState("Loading...");
+    useEffect(() => {});
     function handleTeamLeadChange(event) {
         setTeamLead(event.target.value)
     }
@@ -57,8 +55,6 @@ function TeamInterface(props) {
     function handleProjectChange(event) {
         setProjects(event.target.value)
     }
-
-    //Popover Management
     function handlePopoverClose(event) {
         setAnchorEl(null);
     }
@@ -142,7 +138,7 @@ function TeamInterface(props) {
                     <Select
                         variant="outlined"
                         id="team-lead-select"
-                        single
+                        single="true"
                         autoWidth={true}
                         value={TeamLead}
                         onChange={handleTeamLeadChange}
