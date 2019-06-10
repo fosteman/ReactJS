@@ -19,7 +19,6 @@ class App extends React.Component {
       message: newMessageArray
     });
   };
-  // Implement render method
   render() {
     return (
         <div className='ui segment'>

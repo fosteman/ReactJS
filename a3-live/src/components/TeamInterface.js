@@ -11,6 +11,8 @@ import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
 import Button from '@material-ui/core/Button';
 import axios from "axios";
+import Popover from '@material-ui/core/Popover';
+import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles(theme => ({
     formControl: {
@@ -26,7 +28,13 @@ const useStyles = makeStyles(theme => ({
         minWidth: "180px",
         margin: theme.spacing(1),
     },
-    button: {}
+    SaveButton: {
+        padding: theme.spacing(2),
+
+    },
+    typography: {
+        padding: theme.spacing(2)
+    }
 }));
 
 function TeamInterface(props) {
@@ -35,6 +43,8 @@ function TeamInterface(props) {
     const [TeamLead, setTeamLead] = React.useState(props.Team.TeamLead);
     let assignedProjects = props.Team.Projects.map(assignedID => props.Projects.find(prj => prj._id === assignedID));
     const [Projects, setProjects] = React.useState(assignedProjects);
+    const [anchorEl, setAnchorEl] = React.useState(null); //popover state
+    const [SavePopoverResponse, setSavePopoverState] = React.useState("emptyResponse");
     useEffect(() => {
         console.log('Effect on TeamI: ', props);
     });
@@ -47,30 +57,29 @@ function TeamInterface(props) {
     function handleProjectChange(event) {
         setProjects(event.target.value)
     }
-    function handleSave() {
-        debugger;
+
+    //Popover Management
+    function handlePopoverClose(event) {
+        setAnchorEl(null);
+    }
+    const open = Boolean(anchorEl);
+    const id = open ? 'save-popover' : null;
+    function handleSave(event) {
+        setAnchorEl(event.currentTarget);
         const putData = async () => {
-            debugger;
+            //debugger;
             await axios.put(props.Url + 'team/' + props.Team._id,
                 {
                     Projects,
                     Employees: TeamMembers,
                     TeamLead
                 })
-                .then(res => {
-                    debugger;
-                    //TODO invoke Save-Button Popover with `Successful ${Team.TeamName} update`
-                })
-                .catch( err => {
-                    debugger;
-                    //TODO
-                });
-            debugger;
+                .then(response => setSavePopoverState(response.data.message));
         };
-        debugger;
         putData();
-        debugger;
+
     }
+    //PopoverManagement ends here
     /**
      * @return {string}
      */
@@ -98,7 +107,9 @@ function TeamInterface(props) {
         <Card className={classes.card}>
             <CardHeader title={props.Team.TeamName}
                         action={
+                            <React.Fragment>
                             <Button
+                                aria-describedby={id}
                                 onClick={handleSave}
                                 variant="contained"
                                 color="primary"
@@ -106,6 +117,23 @@ function TeamInterface(props) {
                             >
                                 Save
                             </Button>
+                            <Popover
+                            id={id}
+                            open={open}
+                            anchorEl={anchorEl}
+                            onClose={handlePopoverClose}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'right',
+                            }}
+                            transformOrigin={{
+                                vertical: 'center',
+                                horizontal: 'center',
+                            }}
+                            >
+                            <Typography className={classes.typography}>{SavePopoverResponse}</Typography>
+                            </Popover>
+                            </React.Fragment>
                         }>
             </CardHeader>
             <CardContent>

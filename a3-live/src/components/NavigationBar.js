@@ -7,15 +7,16 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles({
     root: {
         flexGrow: 1,
-    },
+    }
+
 });
 
 function NavigationBar() {
     const classes = useStyles();
     return (
-        <AppBar className={classes.root} position="static">
-            <Toolbar color="white">
-                <Link to="#" variant="h5">Assignment 3 - Team Details</Link>
+        <AppBar className={classes.root} position="static" color="white">
+            <Toolbar>
+                <Link to="#" variant="h3">Assignment 3 - Team Details</Link>
             </Toolbar>
         </AppBar>
     );
