@@ -1,5 +1,4 @@
 import React, { Component, useEffect, useState } from 'react'
-
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -50,17 +49,28 @@ function TeamInterface(props) {
     function handleSave(event) {
 
     }
+    /**
+     * @return {string}
+     */
     function EmployeeFullName(id) {
         if (Array.isArray(id)) return id.map(_id => props.Employees.find(emp => emp._id === _id)).map(employee => employee.FirstName + ' ' +  employee.LastName).join(', ');
-        let foundEmployee = props.Employees.find(
-           emp => emp._id === id
-        );
-        if (!foundEmployee) return "undefined Employee. Check database";
-        return foundEmployee.FirstName + foundEmployee.LastName
+        let foundEmployee = props.Employees.find(emp => emp._id === id);
+        if (!foundEmployee) return foundEmployee.FirstName + foundEmployee.LastName;
+        return `Employee with id: ${id} doesn't exist!`;
     }
+    /**
+     * @return {string}
+     */
     function ProjectName(id) {
-        /*if (Array.isArray(id)) return props.Projects.find(prj => prj._id === id)
-            .map(prj => prj.ProjectName).join(', ');*/
+        if (Array.isArray(id)) {
+            let assignedProjects = id.map((assignedPrj => props.Projects.find(prj => prj._id === assignedPrj._id)));
+            if (assignedProjects) return assignedProjects.map(assignedPrj => assignedPrj.ProjectName).join(', ');
+            else return `Projects: ${id} - don't exist!`;
+        } else {
+            let assignedProject = props.Projects.find(prj => prj._id === id);
+            if (assignedProject) return assignedProject.ProjectName;
+            else return `Project with id: ${id} doesn't exist!`;
+        }
     }
     return (
         <Card className={classes.card}>
@@ -91,9 +101,9 @@ function TeamInterface(props) {
                     >
                         {
                             props.Employees.map(emp =>
-                            <MenuItem key={emp._id} value={emp._id}>
-                                <ListItemText primary={EmployeeFullName(emp._id)} />
-                            </MenuItem>)
+                                <MenuItem key={emp._id} value={emp._id}>
+                                    <ListItemText primary={EmployeeFullName(emp._id)} />
+                                </MenuItem>)
                         }
                     </Select>
                 </FormControl>
@@ -107,10 +117,7 @@ function TeamInterface(props) {
                         value={TeamMembers}
                         onChange={handleTeamMemberChange}
                         input={<Input />}
-                        renderValue={function(selected) {
-                            return EmployeeFullName(selected);
-                        }
-                        }
+                        renderValue={selected => EmployeeFullName(selected)}
                     >
                         {props.Employees.map(emp =>
                             <MenuItem key={emp._id} value={emp._id}>
@@ -129,11 +136,7 @@ function TeamInterface(props) {
                         value={Projects}
                         onChange={handleProjectChange}
                         input={<Input />}
-                        renderValue={function(selected) {
-                            //debugger; //TODO
-                            return ProjectName(selected);
-                        }
-                        }
+                        renderValue={selected => ProjectName(selected)}
                     >
                         {Projects.map(prj =>
                             <MenuItem key={prj._id} value={prj._id}>
@@ -146,4 +149,4 @@ function TeamInterface(props) {
         </Card>
     );
 }
-export default TeamInterface;
+export default TeamInterface
