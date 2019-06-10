@@ -10,6 +10,7 @@ import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
 import Button from '@material-ui/core/Button';
+import axios from "axios";
 
 const useStyles = makeStyles(theme => ({
     formControl: {
@@ -35,7 +36,7 @@ function TeamInterface(props) {
     let assignedProjects = props.Team.Projects.map(assignedID => props.Projects.find(prj => prj._id === assignedID));
     const [Projects, setProjects] = React.useState(assignedProjects);
     useEffect(() => {
-        console.log('Effect: ', props);
+        console.log('Effect on TeamI: ', props);
     });
     function handleTeamLeadChange(event) {
         setTeamLead(event.target.value)
@@ -46,8 +47,29 @@ function TeamInterface(props) {
     function handleProjectChange(event) {
         setProjects(event.target.value)
     }
-    function handleSave(event) {
-
+    function handleSave() {
+        debugger;
+        const putData = async () => {
+            debugger;
+            await axios.put(props.Url + 'team/' + props.Team._id,
+                {
+                    Projects,
+                    Employees: TeamMembers,
+                    TeamLead
+                })
+                .then(res => {
+                    debugger;
+                    //TODO invoke Save-Button Popover with `Successful ${Team.TeamName} update`
+                })
+                .catch( err => {
+                    debugger;
+                    //TODO
+                });
+            debugger;
+        };
+        debugger;
+        putData();
+        debugger;
     }
     /**
      * @return {string}
@@ -55,7 +77,7 @@ function TeamInterface(props) {
     function EmployeeFullName(id) {
         if (Array.isArray(id)) return id.map(_id => props.Employees.find(emp => emp._id === _id)).map(employee => employee.FirstName + ' ' +  employee.LastName).join(', ');
         let foundEmployee = props.Employees.find(emp => emp._id === id);
-        if (!foundEmployee) return foundEmployee.FirstName + foundEmployee.LastName;
+        if (foundEmployee) return foundEmployee.FirstName + ' ' + foundEmployee.LastName;
         return `Employee with id: ${id} doesn't exist!`;
     }
     /**

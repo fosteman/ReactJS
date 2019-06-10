@@ -4,30 +4,26 @@ import NavigationBar from './components/NavigationBar'
 import TeamInterface from './components/TeamInterface'
 import Box from '@material-ui/core/Box'
 import Container from '@material-ui/core/Container'
-
-import mockData from './mockData'
-let mockTeams = mockData.Teams;
-let mockEmployees = mockData.Employees;
-let mockProjects = mockData.Projects;
-//const url = "https://fosteman-mongo-backend.herokuapp.com/";
+const url = "https://fosteman-mongo-backend.herokuapp.com/";
 
 function App() {
   const [Teams, loadTeams] = useState([]);
-  useEffect(()=> {
-    loadTeams(mockTeams);
-    /* API fetch
-    axios.get(url + 'teams-raw')
-        .then(Teams => this.setState({Teams}))
-        .catch(err => console.error(err));
-    axios.get(url + 'employees')
-        .then(Employees => this.setState({Employees}))
-        .catch(err => console.error(err));
-    axios.get(url + 'projects')
-        .then(Projects => this.setState({Projects}))
-        .catch(err => console.error(err));
-    this.state.loaded = true;
-  */
-  });
+  const [Employees, loadEmployees] = useState([]);
+  const [Projects, loadProjects] = useState([]);
+  const [LoadStatus, setLoadStatus] = useState(false);
+
+  useEffect( () => {
+    const fetchData = async () => {
+      let t = await axios.get(url + 'teams-raw');
+      loadTeams(t.data);
+      let e = await axios.get(url + 'employees');
+      loadEmployees(e.data);
+      let p = await axios.get(url + 'projects');
+      loadProjects(p.data);
+      setLoadStatus(true);
+    };
+    fetchData();
+  }, []);
 
 
   return (<React.Fragment>
@@ -38,15 +34,22 @@ function App() {
              flexDirection="row"
              flexWrap="wrap"
         >
-        {
+        { LoadStatus ?
           Teams.map(
               team =>
                   <TeamInterface
+                      key={team._id}
                       Team={team}
-                      Employees={mockEmployees}
-                      Projects={mockProjects}
+                      Employees={Employees}
+                      Projects={Projects}
+                      Url={url}
                   />
-              )
+              ) :
+            (
+                <p>{
+                  // TODO: Loading
+                  }</p>
+            )
             }
           </Box>
     </Container>
