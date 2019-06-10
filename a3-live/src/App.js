@@ -30,10 +30,9 @@ function App() {
   });
 
 
-  return (
-    <React.Fragment>
+  return (<React.Fragment>
+    <Container>
       <NavigationBar />
-      <Container maxWidth="100%">
         <Box display="flex"
              alignContent="flex-start"
              flexDirection="row"
@@ -51,21 +50,6 @@ function App() {
             }
           </Box>
     </Container>
-
-      <div id="genericModal" className="modal fade" tabIndex="-1" role="dialog">
-        <div className="modal-dialog" role="document">
-          <div className="modal-content">
-            <div className="modal-header">
-              <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-              <h4 className="modal-title"/></div>
-            <div className="modal-body"/>
-          </div>
-        </div>
-      </div>
-    </React.Fragment>
-  );
-  }
-
+    </React.Fragment>);
+}
 export default App

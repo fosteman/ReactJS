@@ -1,11 +1,11 @@
 # `Team Details` rework
 This repo contains instructions to build an app to leverage team management. [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) hosts backend with team data, to access it application will take advantage of library [Axios](https://www.npmjs.com/package/axios).
 
+## Styling 
 
+[Material](https://material-ui.com) is chosen, however, there are several other excellent styling frameworks for React: [Semantic-UI](https://react.semantic-ui.com/), [evergreen](https://evergreen.segment.com/)
 
-Semantics and Styling are default inline bootstrap, however, there are several excellent styling frameworks for React: [Semantic-UI](), [evergreen](), [Material]()
-## Material UI
-To install:
+To install Material UI
 ```bash
 npm install @material-ui/core
 ```
@@ -14,36 +14,41 @@ npm install @material-ui/core
 Run the following commands to bootstrap your project directory and install dependencies
 ```bash
 npx create-react-app a3-react
-npm i axios
+npm i axios                                  
 ```
 ## Component Structure
-To build an app, one need to understand component hierarchy. 
-
-<em>What's being built on this cite? </em>
+To build an app, one needs to understand component hierarchy
+![Bootstrap]()
+<em>What's being built on this site? </em>
 
 Glance over the image of application above, and discern components. React is about composable components, so naming them semantically is advised. There're several of them:
 - `<NavigationBar>` - the top line, where links to other pages will reside
   - `<Link>` - 'Team Details', name of the app linked to the (only) main page
-- `<TeamInterface>` - repeating container which presents controls over a team.
-  - `<TeamHeader>` - holds team name
-  - `<SaveButton>` - syncs changes to Backend
-  - `<MultiSelect>` - selectors for <strong>Team Lead</strong>, <strong>Team Members</strong>, <strong>Projects</strong>
+- `<TeamInterface>` - repeating card which presents controls over a team
+  - `<TeamHeader>` - holds team name and **Save** button
+    - `<SaveButton>` - syncs changes to Backend
+  - `<MultiSelect>` - selectors for 
+    - Team Lead
+    - Team Members
+    - Projects
   
-Now, that components to be built are identified, let's create folder `components` containing `Link.js` and `NavigationBar.js`
+Now, that components to be built are identified, let's create folder `components` containing 
+- `NavigationBar.js`
+- `TeamInterface.js`
 ```bash
 mkdir components
-touch NavigationBar.js Link.js
+touch components/NavigationBar.js components/Link.js
 ```
-### `components/Link`
-Building component hierarchy is like erecting a Pyramid - start from foundation to the topmost block.
+### `components/Link.js`
+Building component hierarchy is like erecting a pyramid - start from foundation to the topmost block.
 
-I thus begin with `<Link>`
+`<Link>` is the smallest component in the app. We could utilize Material-UI `<Link>`, but I much believe we'll reuse our own later.
 ```jsx harmony
 import React from 'react'
 
 const Link = props => <a className="navbar-brand" href={props.to}>{props.children}</a>;
 
-export default Link
+export default Link;
 ```
 To create React Component Module (i.e. js module), `react` core library must be imported, otherwise JSX code will not be recognized
 
