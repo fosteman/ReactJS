@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react'
+import React from 'react'
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -36,7 +36,6 @@ const useStyles = makeStyles(theme => ({
         padding: theme.spacing(2)
     }
 }));
-
 function TeamInterface(props) {
     const classes = useStyles();
     const [TeamMembers, setTeamMembers] = React.useState(props.Team.Employees);
@@ -45,7 +44,6 @@ function TeamInterface(props) {
     const [Projects, setProjects] = React.useState(assignedProjects);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [SavePopoverResponse, setSavePopoverState] = React.useState("Loading...");
-    useEffect(() => {});
     function handleTeamLeadChange(event) {
         setTeamLead(event.target.value)
     }
@@ -73,7 +71,6 @@ function TeamInterface(props) {
                 .then(response => setSavePopoverState(response.data.message));
         };
         putData();
-
     }
     //PopoverManagement ends here
     /**
