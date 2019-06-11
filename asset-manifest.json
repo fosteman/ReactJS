@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/static/css/main.34de6062.chunk.css",
-    "main.js": "/static/js/main.857b9635.chunk.js",
-    "main.js.map": "/static/js/main.857b9635.chunk.js.map",
-    "runtime~main.js": "/static/js/runtime~main.a8a9905a.js",
-    "runtime~main.js.map": "/static/js/runtime~main.a8a9905a.js.map",
-    "static/js/2.306a3f4f.chunk.js": "/static/js/2.306a3f4f.chunk.js",
-    "static/js/2.306a3f4f.chunk.js.map": "/static/js/2.306a3f4f.chunk.js.map",
-    "index.html": "/index.html",
-    "precache-manifest.95afca124439649ca3b82084313782df.js": "/precache-manifest.95afca124439649ca3b82084313782df.js",
-    "service-worker.js": "/service-worker.js",
-    "static/css/main.34de6062.chunk.css.map": "/static/css/main.34de6062.chunk.css.map"
+    "main.css": "/ReactWorks/static/css/main.34de6062.chunk.css",
+    "main.js": "/ReactWorks/static/js/main.07a35b62.chunk.js",
+    "main.js.map": "/ReactWorks/static/js/main.07a35b62.chunk.js.map",
+    "runtime~main.js": "/ReactWorks/static/js/runtime~main.cbade75e.js",
+    "runtime~main.js.map": "/ReactWorks/static/js/runtime~main.cbade75e.js.map",
+    "static/js/2.306a3f4f.chunk.js": "/ReactWorks/static/js/2.306a3f4f.chunk.js",
+    "static/js/2.306a3f4f.chunk.js.map": "/ReactWorks/static/js/2.306a3f4f.chunk.js.map",
+    "index.html": "/ReactWorks/index.html",
+    "precache-manifest.8486cd13d8081a8063a2cd3b586f8d71.js": "/ReactWorks/precache-manifest.8486cd13d8081a8063a2cd3b586f8d71.js",
+    "service-worker.js": "/ReactWorks/service-worker.js",
+    "static/css/main.34de6062.chunk.css.map": "/ReactWorks/static/css/main.34de6062.chunk.css.map"
   }
 }
