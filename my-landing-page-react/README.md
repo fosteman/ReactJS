@@ -1,0 +1,1 @@
+Here be landing page in react, fetching random quote of the day via Relay
