@@ -19,6 +19,7 @@ const useStyles = makeStyles(theme => ({
 function createUser(id, last_login, saves, skips) {
     return { id, last_login, saves, skips };
 }
+
 const TableHeadWithSort = ({orderByDate, handleSortRequest}) => {
     // props destruction
     return (
@@ -42,9 +43,11 @@ const TableHeadWithSort = ({orderByDate, handleSortRequest}) => {
             </TableRow>
         </TableHead>
     );
-};
-export default function UserMenu() {
+}
+
+export default function UserMenu({requestUserDetail}) {
     const classes = useStyles();
+    //MockUp users
     const [users, setUserList] = React.useState([
         // using constructor
         createUser (12, '2017-12-31', [1,2,3,89], [7,31]),
@@ -68,9 +71,10 @@ export default function UserMenu() {
             setUserList(users.sort((a,b) => new m(b.last_login).format('YYYYMMDD') - new m(a.last_login).format('YYYYMMDD')));
     };
 
-    const showDetail = e => {
-        console.log('ShowDetail!', e);
-        //TODO Detailed view component
+    const showDetail = id => {
+        let user = users.find(u => id === u.id);
+        console.log('ShowDetail for user: ', user);
+        requestUserDetail(user);
     };
     React.useEffect(() => sort(), []);
     return (
@@ -83,7 +87,7 @@ export default function UserMenu() {
                     {
 
                         users.map(u => (
-                        <TableRow hover key={u.id} onClick={showDetail}>
+                        <TableRow hover key={u.id} onClick={() => showDetail(u.id)}>
                             <TableCell component="th" scope="row">
                                 {u.id}
                             </TableCell>
