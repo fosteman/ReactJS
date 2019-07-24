@@ -48,7 +48,21 @@ export default function UserDetail({userDetail, open, handleClose}) {
                         subheader={'Last Login: ' + userDetail.last_login}
                     />
                     <CardContent>
-                        Saves: {userDetail.saves && userDetail.saves.join('-')}
+                        {
+                            userDetail.saves && userDetail.saves.length ? (
+                                <span>Saves: {userDetail.saves.join('-')}</span>
+                            ) : (
+                                <span>No save points found.</span>
+                            )
+                        }
+                        <br/>
+                        {
+                            userDetail.skips && userDetail.skips.length ? (
+                                <span>Skips: {userDetail.skips.join('-')}</span>
+                            ) : (
+                                <span>No skips were recorded.</span>
+                            )
+                        }
 
                     </CardContent>
                 </Card>
