@@ -6,6 +6,7 @@ import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
 import Avatar from "@material-ui/core/Avatar";
+import Paper from '@material-ui/core/paper';
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import FavoriteIcon from "@material-ui/icons/Favorite";
@@ -26,6 +27,9 @@ const useStyles = makeStyles(theme => ({
         padding: theme.spacing(2, 4, 4),
         outline: 'none',
     },
+    modal: {
+        margin: theme.spacing(25, 20)
+    }
 }));
 
 export default function UserDetail({userDetail, open, handleClose}) {
@@ -34,10 +38,11 @@ export default function UserDetail({userDetail, open, handleClose}) {
     return (
 
             <Modal
+                className={classes.modal}
                 open={open}
                 onClose={handleClose}
             >
-                <Card>
+                <Card >
                     <CardHeader
                         avatar={
                             <Avatar>
@@ -63,7 +68,6 @@ export default function UserDetail({userDetail, open, handleClose}) {
                                 <span>No skips were recorded.</span>
                             )
                         }
-
                     </CardContent>
                 </Card>
             </Modal>
