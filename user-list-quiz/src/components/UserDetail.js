@@ -6,14 +6,6 @@ import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
 import Avatar from "@material-ui/core/Avatar";
-import Paper from '@material-ui/core/paper';
-import IconButton from "@material-ui/core/IconButton";
-import Typography from "@material-ui/core/Typography";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import ShareIcon from "@material-ui/icons/Share";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
-import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 
 
@@ -29,6 +21,9 @@ const useStyles = makeStyles(theme => ({
     },
     modal: {
         margin: theme.spacing(25, 20)
+    },
+    button: {
+        margin: theme.spacing(1)
     }
 }));
 
@@ -69,6 +64,11 @@ export default function UserDetail({userDetail, open, handleClose}) {
                             )
                         }
                     </CardContent>
+                    <CardActions>
+                        <Button onClick={handleClose} variant="outlined" color="secondary" className={classes.button}>
+                            Close
+                        </Button>
+                    </CardActions>
                 </Card>
             </Modal>
     );
