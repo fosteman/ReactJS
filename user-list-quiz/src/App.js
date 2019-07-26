@@ -21,7 +21,7 @@ const usersMockupData = [
 export default function App() {
 const [detailedView, viewDetails] = React.useState(false);
 const [userDetails, setUserDetails] = React.useState({});
-
+const [searchValue, setSearchValue] = React.useState('');
 const handleDetailedViewOpen = (user) => {
     console.log('handleDetailedViewOpen');
     setUserDetails(user);
@@ -34,11 +34,21 @@ const handleDetailedViewClose = () => {
     viewDetails(false);
 };
 
+const handleSearch = searchEvent => {
+    if (!searchEvent.target.value) return setSearchValue('');
+
+    // Otherwise, grab search value
+    let search = searchEvent.target.value;
+
+    // ...and propagate state down UserMenu Component which in turn will take care of filtering users, or, using regex alternative of which: new RegExp(/+search+/)
+    return setSearchValue(search);
+};
+
   return (
     <div className="Users">
-        <TopBar />
+        <TopBar handleSearch={handleSearch} />
 
-        <UserMenu usersMock={usersMockupData} requestUserDetail={handleDetailedViewOpen}
+        <UserMenu searchValue={searchValue} usersMock={usersMockupData} requestUserDetail={handleDetailedViewOpen}
         />
         <UserDetail open={detailedView}
                     userDetail={userDetails}

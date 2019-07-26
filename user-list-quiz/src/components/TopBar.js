@@ -59,7 +59,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export default function() {
+export default function({handleSearch}) {
     const classes = useStyles();
     return (
         <div className={classes.root}>
@@ -73,6 +73,7 @@ export default function() {
                             <SearchIcon/>
                         </div>
                         <InputBase
+                            onChange={handleSearch}
                             placeholder="Search ID"
                             classes={{
                                 root: classes.inputRoot,

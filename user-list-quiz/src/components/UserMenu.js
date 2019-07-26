@@ -40,12 +40,13 @@ const TableHeadWithSort = ({orderByDate, handleSortRequest}) => {
     );
 }
 
-export default function UserMenu({usersMock, requestUserDetail}) {
+export default function UserMenu({searchValue, usersMock, requestUserDetail}) {
     const classes = useStyles();
     //MockUp users
     const [users, setUserList] = React.useState(usersMock);
     const [order, switchOrder] = React.useState(false);
 
+    //Will be invoked upon mount and receiving search value.
     const sort = () => {
         // Flip sorting method to follow
         switchOrder(!order);
@@ -57,12 +58,22 @@ export default function UserMenu({usersMock, requestUserDetail}) {
             setUserList(users.sort((a,b) => new m(b.last_login).format('YYYYMMDD') - new m(a.last_login).format('YYYYMMDD')));
     };
 
+    const filter = searchValue => {
+        if (!searchValue) return setUserList(usersMock);
+        return setUserList(usersMock.filter(usr => usr.id == searchValue));
+    };
+
     const showDetail = id => {
         let user = users.find(u => id === u.id);
         console.log('ShowDetail for user: ', user);
         requestUserDetail(user);
     };
+    // any state change
     React.useEffect(() => sort(), []);
+    // upon receiving properties
+    React.useEffect(() => filter(searchValue), [filter]);
+
+
     return (
         <Paper className={classes.root}>
             <Table className={classes.table}>
@@ -72,14 +83,19 @@ export default function UserMenu({usersMock, requestUserDetail}) {
                 <TableBody>
                     {
 
-                        users.map(u => (
+                        users.length ? users.map(u => (
                         <TableRow hover key={u.id} onClick={() => showDetail(u.id)}>
                             <TableCell component="th" scope="row">
                                 {u.id}
                             </TableCell>
                             <TableCell align="right">{u.last_login}</TableCell>
                         </TableRow>
-                    ))}
+                    )) :
+                            <TableRow>
+                                <TableCell>No users with id {searchValue} found!</TableCell>
+                            </TableRow>
+
+                    }
                 </TableBody>
             </Table>
         </Paper>
