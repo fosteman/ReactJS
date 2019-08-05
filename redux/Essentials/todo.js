@@ -1,6 +1,8 @@
 const Redux = require('redux');
 const TODO_ADD = 'TODO_ADD';
 const TODO_TOGGLE = 'TODO_TOGGLE';
+const SHUT_WINDOWS = 'SHUT_WINDOWS';
+
 
 //sample actions
 const action = {
@@ -11,6 +13,12 @@ const toggleTodoAction = {
     type: TODO_TOGGLE,
     todo: { id: '0' },
 };
+const shutAllWindows = {
+    type: SHUT_WINDOWS,
+    reason: 'Time to watch a documentary',
+    windows: [0, 1]
+};
+
 
 
 function reducer(state, action) {
@@ -20,6 +28,9 @@ function reducer(state, action) {
         }
         case TODO_TOGGLE : {
             return applyToggleTodo(state, action);
+        }
+        case SHUT_WINDOWS: {
+            return shutWindows(state, action);
         }
         default : return state;
     }
@@ -36,6 +47,12 @@ function applyToggleTodo(state, action) {
             : todo
     );
 }
+function shutWindows(state, action) {
+    return state.windows.map(window => action.windows.find(action.id)
+        ? Object.assign({}, window, {toggle: false})
+        : window);
+}
+
 
 const store = Redux.createStore(reducer, []);
 

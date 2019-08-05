@@ -1,6 +1,9 @@
 const Redux = require('redux');
+
+const
+
 let preload = {
-        thermostate: { temperature: 0.0 },
+        thermostat: { temperature: 0.0 },
         windows: [
             {id: 0, toggle: false},
             {id: 1, toggle: false}
@@ -8,7 +11,7 @@ let preload = {
 };
 function reducer(state, action) {
     switch(action.type) {
-        case 'set_thermostate_temp': {
+        case 'SET_THERMOSTAT_TEMP': {
             return applyThermostateTemp(state, action);
         }
         case 'toggle_window_shutters': {
@@ -39,6 +42,6 @@ console.log('initial state is ', store.getState());
 // to get latest updates from state, subscribe with a callback
 const unsubscribe = store.subscribe(() => console.log(store.getState()));
 store.dispatch({
-    type: 'set_thermostate_temp',
+    type: 'SET_THERMOSTAT_TEMP',
     temp: 26.2
 });
