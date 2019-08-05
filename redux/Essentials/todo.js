@@ -5,14 +5,6 @@ const SHUT_WINDOWS = 'SHUT_WINDOWS';
 
 
 //sample actions
-const action = {
-    type: TODO_ADD,
-    todo: { id: '0', name: 'Learn Redux' },
-};
-const toggleTodoAction = {
-    type: TODO_TOGGLE,
-    todo: { id: '0' },
-};
 const shutAllWindows = {
     type: SHUT_WINDOWS,
     reason: 'Time to watch a documentary',
@@ -30,16 +22,27 @@ function reducer(state, action) {
             return applyToggleTodo(state, action);
         }
         case SHUT_WINDOWS: {
-            return shutWindows(state, action);
+            return applyShutWindows(state, action);
         }
         default : return state;
     }
 }
 
-function applyAddTodo(state, action) {
-    return state.concat(action.todo);
+/*Action creators*/
+function doAddTodo(id, name) {
+    return {
+        type: TODO_ADD,
+        todo: { id, name },
+    };
+}
+function doToggleTodo(id) {
+    return {
+        type: TODO_TOGGLE,
+        todo: { id },
+    };
 }
 
+/*Actions*/
 function applyToggleTodo(state, action) {
     return state.map(todo =>
         todo.id === action.todo.id
@@ -47,10 +50,15 @@ function applyToggleTodo(state, action) {
             : todo
     );
 }
-function shutWindows(state, action) {
+function applyShutWindows(state, action) {
     return state.windows.map(window => action.windows.find(action.id)
         ? Object.assign({}, window, {toggle: false})
         : window);
+}
+function applyAddTodo(state, action) {
+    // automatic checkbox state is now here, instead of received action.payload
+    const todo = Object.assign({}, action.todo, { completed: false });
+    return state.concat(todo);
 }
 
 
@@ -62,4 +70,10 @@ const unsubscribe = store.subscribe(() => {
     console.log('store update, current state:');
     console.log(store.getState());
 });
+
+/*dispatching action creators*/
+store.dispatch(doAddTodo('0', 'learn redux'));
+store.dispatch(doAddTodo('1', 'learn mobx'));
+store.dispatch(doToggleTodo('0'));
+
 
