@@ -4,8 +4,18 @@ const TODO_TOGGLE = 'TODO_TOGGLE';
 const SHUT_WINDOWS = 'SHUT_WINDOWS';
 const SET_TEMP = 'SET_TEMP';
 const TINT_WINDOWS = 'TINT_WINDOWS';
-
-function reducer(state, action) {
+function todoReducer(state = [], action) {
+    switch(action.type) {
+        case TODO_ADD : {
+            return [ ...state, todoEntityReducer(undefined, action) ];
+        }
+        case TODO_TOGGLE : {
+            return state.map(todo => todoEntityReducer(todo, action));
+        }
+        default : return state;
+    }
+}
+function todoEntityReducer(state, action) {
     switch(action.type) {
         case TODO_ADD : {
             return applyAddTodo(state, action);
@@ -13,16 +23,30 @@ function reducer(state, action) {
         case TODO_TOGGLE : {
             return applyToggleTodo(state, action);
         }
+        default : return state;
+    }
+}
+function applyAddTodo(state, action) {
+    return Object.assign({}, action.todo, { completed: false });
+}
+function applyToggleTodo(todo, action) {
+    return todo.id === action.todo.id
+        ? Object.assign({}, todo, { completed: !todo.completed })
+        : todo }
+
+function windowsReducer(state = [
+    {id: 0, toggle: true, tint: { degree: 0.0 }},
+    {id: 1, toggle: false, tint: { degree: 0.0 }}
+], action) {
+    switch (action.type) {
         case SHUT_WINDOWS: {
             return applyShutWindows(state, action);
-        }
-        case SET_TEMP: {
-            return applySetTemp(state, action);
         }
         case TINT_WINDOWS: {
             return applyTintWindows(state, action);
         }
-        default : return state;
+        default:
+            return state;
     }
 }
 
