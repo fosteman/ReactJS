@@ -8,6 +8,8 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import m from 'moment';
+import {connect} from 'react-redux';
+import doSortUserList from '../redux/actionCreators';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -38,41 +40,32 @@ const TableHeadWithSort = ({orderByDate, handleSortRequest}) => {
             </TableRow>
         </TableHead>
     );
-}
+};
 
-export default function UserMenu({searchValue, usersMock, requestUserDetail}) {
+function UserMenu({requestUserDetail, users, onSortUserList}) {
     const classes = useStyles();
-    //MockUp users
-    const [users, setUserList] = React.useState(usersMock);
+
     const [order, switchOrder] = React.useState(false);
 
     //Will be invoked upon mount and receiving search value.
     const sort = () => {
         // Flip sorting method to follow
         switchOrder(!order);
-
         // sorting mechanism, takes in consideration even milliseconds.
+        // now dispatches USER_SORT action to Redux Store via MappedDispatcherToProps and action creator doSortUserList
         if (order)
-            setUserList(users.sort((a,b) => new m(a.last_login).format('YYYYMMDD') - new m(b.last_login).format('YYYYMMDD')));
+            onSortUserList((a,b) => new m(a.last_login).format('YYYYMMDD') - new m(b.last_login).format('YYYYMMDD'));
         else
-            setUserList(users.sort((a,b) => new m(b.last_login).format('YYYYMMDD') - new m(a.last_login).format('YYYYMMDD')));
-    };
-
-    const filter = searchValue => {
-        if (!searchValue) return setUserList(usersMock);
-        return setUserList(usersMock.filter(usr => usr.id == searchValue));
+            onSortUserList((a,b) => new m(b.last_login).format('YYYYMMDD') - new m(a.last_login).format('YYYYMMDD'));
     };
 
     const showDetail = id => {
-        let user = users.find(u => id === u.id);
+        let user = users.find(u => id === u.id); //TODO find out expected coercion
         console.log('ShowDetail for user: ', user);
         requestUserDetail(user);
     };
-    // any state change
-    React.useEffect(() => sort(), []);
-    // upon receiving properties
-    React.useEffect(() => filter(searchValue), [filter]);
 
+    React.useEffect(() => console.log('UserMenu component update!'), []);
 
     return (
         <Paper className={classes.root}>
@@ -92,7 +85,7 @@ export default function UserMenu({searchValue, usersMock, requestUserDetail}) {
                         </TableRow>
                     )) :
                             <TableRow>
-                                <TableCell>No users with id {searchValue} found!</TableCell>
+                                <TableCell>No users with specified id found!</TableCell>
                             </TableRow>
 
                     }
@@ -101,3 +94,16 @@ export default function UserMenu({searchValue, usersMock, requestUserDetail}) {
         </Paper>
     );
 }
+function MapStateToProps(state) {
+    return {
+        users: state.userList
+    }
+}
+function MapDispatchToProps(dispatch) {
+    return {
+        onSortUserList: sortingAlgorithm => dispatch(doSortUserList(sortingAlgorithm))
+    }
+}
+
+const ConnectedUserMenu = connect(MapStateToProps, MapDispatchToProps)(UserMenu);
+export default ConnectedUserMenu;

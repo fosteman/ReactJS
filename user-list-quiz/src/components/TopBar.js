@@ -59,8 +59,9 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export default function({handleSearch}) {
+export default function TopBar({onSearch}) {
     const classes = useStyles();
+
     return (
         <div className={classes.root}>
             <AppBar position="static">
@@ -73,7 +74,7 @@ export default function({handleSearch}) {
                             <SearchIcon/>
                         </div>
                         <InputBase
-                            onChange={handleSearch}
+                            onChange={event => onSearch(event.target.value)}
                             placeholder="Search ID"
                             classes={{
                                 root: classes.inputRoot,
