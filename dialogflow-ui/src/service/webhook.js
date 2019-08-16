@@ -12,13 +12,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
-app.post('/chat', (req, res) => {
-    const { message } = req.body;
+app.post('/', (req, res) => {
     console.log('chat post log', req.body);
-    processMessage(message);
+    processMessage(req.body);
 });
 
 app.set('port', process.env.PORT);
-const server = app.listen(app.get('port'), () => {
+
+const server = app.listen(app.set('port'), () => {
     console.log(`Express running → PORT ${server.address().port}`);
 });

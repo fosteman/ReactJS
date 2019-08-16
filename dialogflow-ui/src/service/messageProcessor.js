@@ -1,51 +1,17 @@
-const Dialogflow = require('dialogflow');
-const Pusher = require('pusher');
+const {WebhookClient, Card, Suggestion} = require('dialogflow-fulfillment');
 
-// You can find your project ID in your Dialogflow agent settings
-const projectId = 'qwiklabs-gcp-a113494d246c87ac';
-const sessionId = '111111';
-const languageCode = 'en-US';
+module.exports.processMessage = (request, respose) => {
+    const agent = new WebhookClient({ request, respose });
+    console.log('Dialogflow Request body: ' + JSON.stringify(agent));
 
-const config = {
-    credentials: {
-        private_key: process.env.DIALOGFLOW_PRIVATE_KEY,
-        client_email: process.env.DIALOGFLOW_CLIENT_EMAIL,
-    },
+
+    function welcome(agent) {
+        agent.add(`Welcome to my agent!`);
+        agent.add(new Suggestion(`Example suggestion`));
+    }
+
+    let intentMap = new Map();
+    intentMap.set('Welcome', welcome);
+    agent.handleRequest(intentMap);
 };
 
-const pusher = new Pusher({
-    appId: process.env.PUSHER_APP_ID,
-    key: process.env.PUSHER_APP_KEY,
-    secret: process.env.PUSHER_APP_SECRET,
-    cluster: process.env.PUSHER_APP_CLUSTER,
-    encrypted: true,
-});
-
-const sessionClient = new Dialogflow.SessionsClient(config);
-
-const sessionPath = sessionClient.sessionPath(projectId, sessionId);
-
-const processMessage = message => {
-    const request = {
-        session: sessionPath,
-        queryInput: {
-            text: {
-                text: message,
-                languageCode,
-            },
-        },
-    };
-    sessionClient
-        .detectIntent(request)
-        .then(responses => {
-            const result = responses[0].queryResult;
-            return pusher.trigger('bot', 'bot-response', {
-                message: result.fulfillmentText,
-            });
-        })
-        .catch(err => {
-            console.error('ERROR:', err);
-        });
-};
-
-module.exports = processMessage;
