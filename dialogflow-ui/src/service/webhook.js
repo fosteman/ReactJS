@@ -31,7 +31,7 @@ app.post('/', (req, res) => {
 });
 
 app.set('port', process.env.PORT);
-
+//service endpoint
 const server = app.listen(app.set('port'), () => {
     console.log(`Express running → PORT ${server.address().port}`);
 });
