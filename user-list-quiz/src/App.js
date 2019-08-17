@@ -1,55 +1,50 @@
 import React from 'react';
 
+import TopBar from "./components/TopBar";
 import UserMenu from './components/UserMenu';
 import UserDetail from "./components/UserDetail";
-import TopBar from "./components/TopBar";
 
-// mock constructor
-const createUser = (id, last_login, saves, skips) => { return {id, last_login, saves, skips} };
+import {connect} from 'react-redux';
 
-const usersMockupData = [
-    // using constructor
-    createUser (12, '2017-12-31', [1,2,3,89], [7,31]),
-    createUser(11, '2019-6-3', [43, 22, 89], [2,39]),
-    createUser(19, '2019-3-12', [43, 22, 89], [2,39]),
-    // hard coded
-    {'id': 22, 'last_login': '2019-3-12', 'saves': [], 'skips': [7]},
-    {'id': 20, 'last_login': '2019-2-27', 'saves': [22], 'skips': [9]},
-    {'id': 24, 'last_login': '2019-1-31', 'saves': [2,43, 22], 'skips': [1,89]},
-];
+import doSearchUser  from '../redux/actionCreators';
+
+function mapDispatchToProps(dispatch) {
+    return {
+        onSearch: search => dispatch(doSearchUser(search)),
+    };
+}
+const ConnectedTopBar = connect(null, mapDispatchToProps)(TopBar);
+
 
 export default function App() {
-const [detailedView, viewDetails] = React.useState(false);
-const [userDetails, setUserDetails] = React.useState({});
-const [searchValue, setSearchValue] = React.useState('');
-const handleDetailedViewOpen = (user) => {
-    console.log('handleDetailedViewOpen');
-    setUserDetails(user);
-    viewDetails(true);
-};
+    // UserDetail component toggle
+    const [detailedView, viewDetails] = React.useState(false);
+    // UserDetail component StateToProps
+    const [userDetails, setUserDetails] = React.useState({});
 
-const handleDetailedViewClose = () => {
-    console.log('handleDetailedViewClose');
-    setUserDetails({});
-    viewDetails(false);
-};
+    const handleDetailedViewOpen = (user) => {
+        console.log('handleDetailedViewOpen');
+        setUserDetails(user);
+        viewDetails(true);
+    };
 
-const handleSearch = searchEvent => {
-    if (!searchEvent.target.value) return setSearchValue('');
+    const handleDetailedViewClose = () => {
+        console.log('handleDetailedViewClose');
+        setUserDetails({});
+        viewDetails(false);
+    };
 
-    // Otherwise, grab search value
-    let search = searchEvent.target.value;
-
-    // ...and propagate state down UserMenu Component which in turn will take care of filtering users, or, using regex alternative of which: new RegExp(/+search+/)
-    return setSearchValue(search);
-};
+    /* This is to be substituted by Redux action.
+    * Hence search value should not be stored in App, but rather in the store
+    * And UserMenu component will be subscribed to the store's state.userList update
+    * */
 
   return (
     <div className="Users">
-        <TopBar handleSearch={handleSearch} />
+        <ConnectedTopBar />
 
-        <UserMenu searchValue={searchValue} usersMock={usersMockupData} requestUserDetail={handleDetailedViewOpen}
-        />
+        <UserMenu requestUserDetail={handleDetailedViewOpen} />
+
         <UserDetail open={detailedView}
                     userDetail={userDetails}
                     handleClose={handleDetailedViewClose}
