@@ -1,6 +1,17 @@
 import React from 'react';
-import axios from 'axios';
 import {Launcher} from 'react-chat-window';
+
+const keyFilename = process.env.DF_SERVICE_ACCOUNT_PATH;
+const { SessionsClient } = require('dialogflow');
+
+const dialogflowClient = new SessionsClient({
+  credentials: {
+    private_key: process.env.DF_PRIV_KEY,
+    client_email: process.env.DF_CLIENT_EMAIL
+  },
+  projectId: process.env.DF_PROJECT_ID
+});
+const projectId = process.env.DF_PROJECT_ID;
 
 
 export default function App() {
